@@ -2,6 +2,7 @@
 
 	public class Artwork {
 		public int ArtworkId { get; set; }
+		public int? Year { get; set; }
 		public string Slug { get; set; } = String.Empty;
 		public string Title { get; set; } = String.Empty;
 		public string Description { get; set; } = String.Empty;
