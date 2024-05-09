@@ -31,25 +31,25 @@ namespace ArtGallery.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ArtistId"));
 
                     b.Property<string>("Country")
-                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("Date_of_birth")
+                    b.Property<DateTime?>("Date_of_birth")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("Date_of_death")
+                    b.Property<DateTime?>("Date_of_death")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Movement")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Profession")
                         .HasColumnType("text");
 
                     b.Property<string>("Slug")
@@ -87,6 +87,9 @@ namespace ArtGallery.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("Year")
+                        .HasColumnType("integer");
+
                     b.HasKey("ArtworkId");
 
                     b.HasIndex("ArtistId");
@@ -112,7 +115,7 @@ namespace ArtGallery.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Inauguration_year")
+                    b.Property<int>("Inauguration")
                         .HasColumnType("integer");
 
                     b.Property<int>("Latitude")
