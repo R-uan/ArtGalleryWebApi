@@ -1,5 +1,4 @@
 ﻿using ArtGallery.Models;
-using ArtGallery.Services;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -7,9 +6,14 @@ namespace ArtGallery.Controllers;
 
 [ApiController]
 [Route("artist")]
-public class ArtistController(IArtistService service, IValidator<Artist> validator) : ControllerBase {
-	private readonly IArtistService _artistService = service;
-	private readonly IValidator<Artist> _validator = validator;
+public class ArtistController : ControllerBase {
+	private readonly IValidator<Artist> _validator;
+	private readonly IService<Artist, UpdateArtist, ArtistPartial> _artistService;
+
+	public ArtistController(IService<Artist, UpdateArtist, ArtistPartial> service, IValidator<Artist> validator) {
+		_artistService = service;
+		_validator = validator;
+	}
 
 	[HttpGet]
 	public async Task<ActionResult<List<Artist>>> All() {
@@ -74,10 +78,8 @@ public class ArtistController(IArtistService service, IValidator<Artist> validat
 	}
 
 	[HttpPatch("/{id:int}")]
-	public async Task<ActionResult<bool>> Patch(int id, Artist artist) {
+	public async Task<ActionResult<bool>> Patch(int id, UpdateArtist artist) {
 		try {
-			ValidationResult validation = _validator.Validate(artist);
-			if (!validation.IsValid) return BadRequest(validation.Errors);
 			var update = await _artistService.UpdateOne(id, artist);
 			if (update == null) return NotFound();
 			return update == true ? Ok() : StatusCode(500);
