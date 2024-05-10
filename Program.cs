@@ -9,8 +9,9 @@ using ArtGallery.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 var Configuration = builder.Configuration;
-builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<RouteOptions>(options => {
@@ -21,9 +22,15 @@ builder.Services.AddDbContext<GalleryDbContext>(options => {
 	options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
+/* Artist */
+builder.Services.AddScoped<IRepository<Artist, UpdateArtist, ArtistPartial>, ArtistRepository>();
+builder.Services.AddScoped<IService<Artist, UpdateArtist, ArtistPartial>, ArtistService>();
 builder.Services.AddScoped<IValidator<Artist>, ArtistValidator>();
-builder.Services.AddScoped<IArtistService, ArtistService>();
+
+/* Museum */
+builder.Services.AddScoped<IRepository<Museum, UpdateMuseum, MuseumPartial>, MuseumRepository>();
+builder.Services.AddScoped<IService<Museum, UpdateMuseum, MuseumPartial>, MuseumService>();
+builder.Services.AddScoped<IValidator<Museum>, MuseumValidator>();
 
 var app = builder.Build();
 app.MapControllers();
