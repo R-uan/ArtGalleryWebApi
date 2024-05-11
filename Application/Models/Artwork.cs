@@ -1,10 +1,14 @@
-﻿namespace ArtGallery.Models {
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ArtGallery.Models {
 	public class Artwork {
 		public int ArtworkId { get; set; }
 		public int? Year { get; set; }
-		public string Slug { get; set; } = String.Empty;
-		public string Title { get; set; } = String.Empty;
-		public string Description { get; set; } = String.Empty;
+
+		[Required] public required string Slug { get; set; }
+		[Required] public required string Title { get; set; }
+		[Required] public required string Description { get; set; }
+		[Required] public required string ImageURL { get; set; }
 
 		public int ArtistId { get; set; }
 		public Artist? Artist { get; set; }
