@@ -21,7 +21,7 @@ namespace ArtGallery.Repositories {
 			return await _db.Artists.Where(artist => artist.Slug == slug).FirstAsync();
 		}
 
-		public async Task<bool?> UpdateById(int id, UpdateArtist patch) {
+		public async Task<Artist?> UpdateById(int id, UpdateArtist patch) {
 			var artist = await _db.Artists.FindAsync(id);
 			if (artist == null) return null;
 			if (patch != null) {
@@ -34,10 +34,9 @@ namespace ArtGallery.Repositories {
 				if (patch.Date_of_death != null) artist.Date_of_death = patch.Date_of_death;
 
 				await _db.SaveChangesAsync();
-				return true;
+				return await _db.Artists.FindAsync(id);
 			}
-
-			return false;
+			throw new Exception();
 		}
 
 		public async Task<bool?> DeleteById(int id) {

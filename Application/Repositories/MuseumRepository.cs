@@ -28,22 +28,23 @@ namespace ArtGallery.Repositories {
 			return await _db.Museums.Where(museum => museum.Slug == slug).FirstAsync();
 		}
 
-		public async Task<bool?> UpdateById(int id, UpdateMuseum patch) {
+		public async Task<Museum?> UpdateById(int id, UpdateMuseum patch) {
 			var museum = await _db.Museums.FindAsync(id);
 			if (museum == null) return null;
-			if (patch == null) return false;
+			if (patch != null) {
+				if (!string.IsNullOrEmpty(patch.Name)) museum.Name = patch.Name;
+				if (!string.IsNullOrEmpty(patch.City)) museum.City = patch.City;
+				if (!string.IsNullOrEmpty(patch.State)) museum.State = patch.State;
+				if (!string.IsNullOrEmpty(patch.Country)) museum.Country = patch.Country;
 
-			if (!string.IsNullOrEmpty(patch.Name)) museum.Name = patch.Name;
-			if (!string.IsNullOrEmpty(patch.City)) museum.City = patch.City;
-			if (!string.IsNullOrEmpty(patch.State)) museum.State = patch.State;
-			if (!string.IsNullOrEmpty(patch.Country)) museum.Country = patch.Country;
+				if (patch.Inauguration.HasValue) museum.Inauguration = patch.Inauguration;
+				if (patch.Latitude.HasValue) museum.Latitude = patch.Latitude;
+				if (patch.Longitude.HasValue) museum.Longitude = patch.Longitude;
 
-			if (patch.Inauguration.HasValue) museum.Inauguration = patch.Inauguration;
-			if (patch.Latitude.HasValue) museum.Latitude = patch.Latitude;
-			if (patch.Longitude.HasValue) museum.Longitude = patch.Longitude;
-
-			await _db.SaveChangesAsync();
-			return true;
+				await _db.SaveChangesAsync();
+				return await _db.Museums.FindAsync(id);
+			}
+			throw new Exception();
 		}
 
 		public async Task<bool?> DeleteById(int id) {
