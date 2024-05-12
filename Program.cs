@@ -12,7 +12,9 @@ var Configuration = builder.Configuration;
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c => {
+	c.ResolveConflictingActions(x => x.First());
+});
 
 builder.Services.Configure<RouteOptions>(options => {
 	options.ConstraintMap.Add("string", typeof(string));
@@ -33,7 +35,7 @@ builder.Services.AddScoped<IMuseumRepository, MuseumRepository>();
 builder.Services.AddScoped<IMuseumService, MuseumService>();
 
 /* Artwork */
-/* builder.Services.AddScoped<IValidator<Museum>, MuseumValidator>(); */
+builder.Services.AddScoped<IValidator<Artwork>, ArtworkValidator>();
 builder.Services.AddScoped<IArtworkRepository, ArtworkRepository>();
 builder.Services.AddScoped<IArtworkService, ArtworkService>();
 
