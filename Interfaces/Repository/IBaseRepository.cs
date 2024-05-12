@@ -1,5 +1,5 @@
-﻿namespace ArtGallery {
-	public interface IRepository<TEntity, UEntity, PEntity> {
+﻿namespace ArtGallery.Interfaces {
+	public interface IBaseRepository<TEntity, UEntity, PEntity> {
 		Task<TEntity> SaveOne(TEntity entity);
 		Task<bool?> DeleteById(int id);
 		Task<TEntity?> UpdateById(int id, UEntity patch);

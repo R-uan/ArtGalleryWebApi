@@ -1,5 +1,5 @@
-﻿namespace ArtGallery {
-	public interface IService<TEntity, UEntity, PEntity> {
+﻿namespace ArtGallery.Interfaces {
+	public interface IBaseService<TEntity, UEntity, PEntity> {
 		public Task<TEntity> PostOne(TEntity artist);
 		public Task<TEntity?> GetOneById(int id);
 		public Task<TEntity?> GetOneBySlug(string slug);
@@ -8,6 +8,6 @@
 		public Task<List<PEntity>> GetAllPartial();
 
 		public Task<bool?> DeleteOne(int id);
-		public Task<bool?> UpdateOne(int id, UEntity artist);
+		public Task<TEntity?> UpdateOne(int id, UEntity artist);
 	}
 }

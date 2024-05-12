@@ -1,16 +1,17 @@
 ﻿using ArtGallery.Models;
 using Microsoft.EntityFrameworkCore;
+using ArtGallery.Interfaces;
 
 namespace ArtGallery.Repositories {
-	public class ArtistRepository(GalleryDbContext db) : IRepository<Artist, UpdateArtist, ArtistPartial> {
+	public class ArtistRepository(GalleryDbContext db) : IArtistRepository {
 		private readonly GalleryDbContext _db = db;
 
 		public async Task<List<Artist>> FindAll() {
 			return await _db.Artists.ToListAsync();
 		}
 
-		public async Task<List<ArtistPartial>> FindAllPartial() {
-			return await _db.Artists.Select(artist => new ArtistPartial(artist.Name, artist.Slug)).ToListAsync();
+		public async Task<List<PartialArtist>> FindAllPartial() {
+			return await _db.Artists.Select(artist => new PartialArtist(artist.Name, artist.Slug)).ToListAsync();
 		}
 
 		public async Task<Artist?> FindById(int id) {

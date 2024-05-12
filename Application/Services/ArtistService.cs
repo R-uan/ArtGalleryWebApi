@@ -1,17 +1,16 @@
 ﻿using ArtGallery.Models;
-namespace ArtGallery.Services {
-	public class ArtistService : IService<Artist, UpdateArtist, ArtistPartial> {
+using ArtGallery.Interfaces;
 
-		private readonly IRepository<Artist, UpdateArtist, ArtistPartial> _repository;
-		public ArtistService(IRepository<Artist, UpdateArtist, ArtistPartial> repository) {
-			_repository = repository;
-		}
+namespace ArtGallery.Services {
+	public class ArtistService(IArtistRepository repository) : IArtistService {
+
+		private readonly IArtistRepository _repository = repository;
 
 		public async Task<List<Artist>> GetAll() {
 			return await _repository.FindAll();
 		}
 
-		public async Task<List<ArtistPartial>> GetAllPartial() {
+		public async Task<List<PartialArtist>> GetAllPartial() {
 			return await _repository.FindAllPartial();
 		}
 
@@ -23,7 +22,7 @@ namespace ArtGallery.Services {
 			return await _repository.SaveOne(artist);
 		}
 
-		public async Task<bool?> UpdateOne(int id, UpdateArtist artist) {
+		public async Task<Artist?> UpdateOne(int id, UpdateArtist artist) {
 			return await _repository.UpdateById(id, artist);
 		}
 

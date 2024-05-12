@@ -1,8 +1,9 @@
 ﻿using ArtGallery.Models;
 using Microsoft.EntityFrameworkCore;
+using ArtGallery.Interfaces;
 
 namespace ArtGallery.Repositories {
-	public class MuseumRepository(GalleryDbContext db) : IRepository<Museum, UpdateMuseum, MuseumPartial> {
+	public class MuseumRepository(GalleryDbContext db) : IMuseumRepository {
 		private readonly GalleryDbContext _db = db;
 
 		public async Task<Museum> SaveOne(Museum museum) {
@@ -16,8 +17,8 @@ namespace ArtGallery.Repositories {
 			return await _db.Museums.ToListAsync();
 		}
 
-		public async Task<List<MuseumPartial>> FindAllPartial() {
-			return await _db.Museums.Select(m => new MuseumPartial(m.Name, m.Country)).ToListAsync();
+		public async Task<List<PartialMuseum>> FindAllPartial() {
+			return await _db.Museums.Select(m => new PartialMuseum(m.Name, m.Country)).ToListAsync();
 		}
 
 		public async Task<Museum?> FindById(int id) {

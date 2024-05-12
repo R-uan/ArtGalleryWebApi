@@ -2,10 +2,10 @@ using ArtGallery;
 using FluentValidation;
 using ArtGallery.Models;
 using ArtGallery.Services;
+using ArtGallery.Interfaces;
 using ArtGallery.Repositories;
 using ArtGallery.Utils.Validators;
 using Microsoft.EntityFrameworkCore;
-using ArtGallery.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 var Configuration = builder.Configuration;
@@ -23,14 +23,19 @@ builder.Services.AddDbContext<GalleryDbContext>(options => {
 });
 
 /* Artist */
-builder.Services.AddScoped<IRepository<Artist, UpdateArtist, ArtistPartial>, ArtistRepository>();
-builder.Services.AddScoped<IService<Artist, UpdateArtist, ArtistPartial>, ArtistService>();
 builder.Services.AddScoped<IValidator<Artist>, ArtistValidator>();
+builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
+builder.Services.AddScoped<IArtistService, ArtistService>();
 
 /* Museum */
-builder.Services.AddScoped<IRepository<Museum, UpdateMuseum, MuseumPartial>, MuseumRepository>();
-builder.Services.AddScoped<IService<Museum, UpdateMuseum, MuseumPartial>, MuseumService>();
 builder.Services.AddScoped<IValidator<Museum>, MuseumValidator>();
+builder.Services.AddScoped<IMuseumRepository, MuseumRepository>();
+builder.Services.AddScoped<IMuseumService, MuseumService>();
+
+/* Artwork */
+/* builder.Services.AddScoped<IValidator<Museum>, MuseumValidator>(); */
+builder.Services.AddScoped<IArtworkRepository, ArtworkRepository>();
+builder.Services.AddScoped<IArtworkService, ArtworkService>();
 
 var app = builder.Build();
 app.MapControllers();
