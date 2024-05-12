@@ -35,8 +35,8 @@ namespace ArtGallery.Controllers {
 			}
 		}
 
-		[HttpGet("/partial")]
-		public async Task<ActionResult<List<Museum>>> AllPartial() {
+		[HttpGet("partial")]
+		public async Task<ActionResult<List<Museum>>> PartialMuseums() {
 			try {
 				var museum = await _service.GetAllPartial();
 				return Ok(museum);
@@ -45,7 +45,7 @@ namespace ArtGallery.Controllers {
 			}
 		}
 
-		[HttpGet("/{slug}")]
+		[HttpGet("{slug}")]
 		public async Task<ActionResult<Museum>> OneBySlug(string slug) {
 			try {
 				var museum = await _service.GetOneBySlug(slug);
@@ -55,7 +55,7 @@ namespace ArtGallery.Controllers {
 			}
 		}
 
-		[HttpGet("/{id:int}")]
+		[HttpGet("{id:int}")]
 		public async Task<ActionResult<Museum>> OneById(int id) {
 			try {
 				var museum = await _service.GetOneById(id);
@@ -65,7 +65,7 @@ namespace ArtGallery.Controllers {
 			}
 		}
 
-		[HttpDelete("/{id:int}")]
+		[HttpDelete("{id:int}")]
 		public async Task<ActionResult<bool>> Delete(int id) {
 			try {
 				var delete = await _service.DeleteOne(id);
@@ -75,7 +75,7 @@ namespace ArtGallery.Controllers {
 			}
 		}
 
-		[HttpPatch("/{id:int}")]
+		[HttpPatch("{id:int}")]
 		public async Task<ActionResult<bool>> Patch(int id, UpdateMuseum museum) {
 			try {
 				var update = await _service.UpdateOne(id, museum);
