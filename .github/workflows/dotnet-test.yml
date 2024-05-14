@@ -26,3 +26,11 @@ jobs:
     - name: Build
       working-directory: "./ArtGallery"
       run: dotnet build --no-restore
+
+    - name: Restore Integration Tests
+      working-directory: "./ArtGallery.Integration.Tests"
+      run: dotnet restore
+
+    - name: Run Integration Tests
+      working-directory: "./ArtGallery.Integration.Tests"
+      run: dotnet test
