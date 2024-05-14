@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ArtGallery.Integration.Tests.Seeders {
-    public class MuseumSeeders {
+    public class MuseumSeeder {
         public static async Task Seed(GalleryDbContext context) {
             Museum one = new() { Name = "Belladona", Slug = "museum-belladona", Country = "France" };
             Museum two = new() { Name = "Belladona", Slug = "museum-belladona", Country = "France" };
