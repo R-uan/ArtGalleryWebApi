@@ -12,6 +12,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: "my_password"
+          POSTGRES_USERNAME: "my_user"
+          POSTGRES_DATABASE: "test_database"
+        ports:
+          - 5432:5432
+
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
