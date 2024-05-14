@@ -21,7 +21,7 @@ jobs:
       
     - name: Run Docker Compose
       working-directory: "./ArtGallery.Integration.Tests"
-      run: docker compose up
+      run: docker compose up -d
       
     - name: Restore dependencies
       working-directory: "./ArtGallery"
