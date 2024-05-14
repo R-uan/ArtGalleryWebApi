@@ -12,23 +12,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_USERNAME: my_user
-          POSTGRES_DATABASE: test_database
-          POSTGRES_PASSWORD: my_password
-        ports:
-          - 5432:5432
-
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.100
-
+      
+    - name: Run Docker Compose
+      working-directory: "./ArtGallery.Integration.Tests"
+      run: docker compose up
+      
     - name: Restore dependencies
       working-directory: "./ArtGallery"
       run: dotnet restore
