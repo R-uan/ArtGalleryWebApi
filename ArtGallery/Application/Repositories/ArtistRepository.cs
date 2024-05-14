@@ -19,7 +19,7 @@ namespace ArtGallery.Repositories {
 		}
 
 		public async Task<Artist?> FindBySlug(string slug) {
-			return await _db.Artists.Where(artist => artist.Slug == slug).FirstAsync();
+			return await _db.Artists.Where(artist => artist.Slug == slug).FirstOrDefaultAsync();
 		}
 
 		public async Task<Artist?> UpdateById(int id, UpdateArtist patch) {
