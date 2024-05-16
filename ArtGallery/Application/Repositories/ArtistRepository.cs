@@ -29,7 +29,7 @@ namespace ArtGallery.Repositories {
 				if (!string.IsNullOrEmpty(patch.Name)) artist.Name = patch.Name;
 				if (!string.IsNullOrEmpty(patch.Country)) artist.Country = patch.Country;
 				if (!string.IsNullOrEmpty(patch.Slug)) artist.Slug = patch.Slug;
-				if (!string.IsNullOrEmpty(patch.Description)) artist.Description = patch.Description;
+				if (!string.IsNullOrEmpty(patch.Biography)) artist.Biography = patch.Biography;
 
 				if (patch.Date_of_birth != null) artist.Date_of_birth = patch.Date_of_birth;
 				if (patch.Date_of_death != null) artist.Date_of_death = patch.Date_of_death;
@@ -45,8 +45,8 @@ namespace ArtGallery.Repositories {
 			if (artist_to_delete == null) return null;
 			_db.Artists.Remove(artist_to_delete);
 			await _db.SaveChangesAsync();
-			var exists = await _db.Artists.AnyAsync(a => a.ArtistId == id);
-			return !exists;
+			var exists = await _db.Artists.FindAsync(id);
+			return exists == null;
 		}
 
 		public async Task<Artist> SaveOne(Artist artist) {

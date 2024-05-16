@@ -26,7 +26,7 @@ namespace ArtGallery.Repositories {
 		}
 
 		public async Task<Museum?> FindBySlug(string slug) {
-			return await _db.Museums.Where(museum => museum.Slug == slug).FirstAsync();
+			return await _db.Museums.Where(museum => museum.Slug == slug).FirstOrDefaultAsync();
 		}
 
 		public async Task<Museum?> UpdateById(int id, UpdateMuseum patch) {

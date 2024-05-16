@@ -1,6 +1,7 @@
 ﻿using ArtGallery.Models;
 using Microsoft.EntityFrameworkCore;
 using ArtGallery.Interfaces;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace ArtGallery.Repositories {
 	public class ArtworkRepository(GalleryDbContext db) : IArtworkRepository {
@@ -16,8 +17,8 @@ namespace ArtGallery.Repositories {
 
 		public async Task<List<PartialArtwork>> FindAllPartial() {
 			return await _db.Artworks.Join(_db.Artists,
-				a => a.ArtistId, b => b.ArtistId,
-				(a, b) => new PartialArtwork(a.Title, a.Slug, a.ImageURL, b.Name)).ToListAsync();
+				artwork => artwork.ArtistId, artist => artist.ArtistId,
+				(artwork, artist) => new PartialArtwork(artwork.Title, artwork.Slug, artwork.ImageURL, artist.Name)).ToListAsync();
 		}
 
 		public async Task<Artwork?> FindById(int id) {
@@ -25,7 +26,11 @@ namespace ArtGallery.Repositories {
 		}
 
 		public async Task<Artwork?> FindBySlug(string slug) {
-			return await _db.Artworks.Where(a => a.Slug == slug).FirstAsync();
+			return await _db.Artworks
+			.Include(artwork => artwork.Artist)
+			.Include(artwork => artwork.Museum)
+			.Where(a => a.Slug == slug)
+			.FirstOrDefaultAsync();
 		}
 
 		public async Task<Artwork> SaveOne(Artwork entity) {
@@ -39,7 +44,7 @@ namespace ArtGallery.Repositories {
 			if (artwork == null) return null;
 			else if (patch != null) {
 				if (!string.IsNullOrEmpty(patch.Title)) artwork.Title = patch.Title;
-				if (!string.IsNullOrEmpty(patch.Description)) artwork.Description = patch.Description;
+				if (!string.IsNullOrEmpty(patch.History)) artwork.History = patch.History;
 				if (!string.IsNullOrEmpty(patch.Slug)) artwork.Slug = patch.Slug;
 				if (!string.IsNullOrEmpty(patch.ImageURL)) artwork.ImageURL = patch.ImageURL;
 
