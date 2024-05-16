@@ -30,6 +30,9 @@ namespace ArtGallery.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ArtistId"));
 
+                    b.Property<string>("Biography")
+                        .HasColumnType("text");
+
                     b.Property<string>("Country")
                         .HasColumnType("text");
 
@@ -38,9 +41,6 @@ namespace ArtGallery.Migrations
 
                     b.Property<DateTime?>("Date_of_death")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
 
                     b.Property<string>("Movement")
                         .HasColumnType("text");
@@ -69,10 +69,10 @@ namespace ArtGallery.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ArtworkId"));
 
-                    b.Property<int>("ArtistId")
+                    b.Property<int?>("ArtistId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("History")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -82,6 +82,10 @@ namespace ArtGallery.Migrations
 
                     b.Property<int>("MuseumId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Period")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Slug")
                         .IsRequired()
@@ -148,8 +152,7 @@ namespace ArtGallery.Migrations
                     b.HasOne("ArtGallery.Models.Artist", "Artist")
                         .WithMany("Artworks")
                         .HasForeignKey("ArtistId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("ArtGallery.Models.Museum", "Museum")
                         .WithMany("Artworks")
