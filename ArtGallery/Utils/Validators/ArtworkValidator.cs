@@ -8,7 +8,7 @@ namespace ArtGallery.Utils.Validators {
 			RuleFor(artwork => artwork.Title).NotEmpty().WithMessage("Name is required.");
 			RuleFor(artwork => artwork.ArtistId).NotEmpty().WithMessage("Provide Artist ID");
 			RuleFor(artwork => artwork.ImageURL).NotEmpty().WithMessage("Provide a image url");
-			RuleFor(artwork => artwork.Description).NotEmpty().WithMessage("Provide a description about the artwork.");
+			RuleFor(artwork => artwork.History).NotEmpty().WithMessage("Provide a brief history about the artwork.");
 		}
 	}
 }

@@ -27,7 +27,7 @@ namespace ArtGallery.Controllers {
 				ValidationResult validation = _validator.Validate(artist);
 				if (!validation.IsValid) return BadRequest(validation.Errors);
 				var create_artist = await _artistService.PostOne(artist);
-				return create_artist;
+				return Ok(create_artist);
 			} catch (System.Exception e) {
 				return StatusCode(500, e.Message);
 			}
@@ -68,14 +68,14 @@ namespace ArtGallery.Controllers {
 		public async Task<ActionResult<bool>> Delete(int id) {
 			try {
 				var delete = await _artistService.DeleteOne(id);
-				return delete == null ? NotFound() : delete == true ? Ok() : StatusCode(500);
+				return delete == null ? NotFound(false) : delete == true ? Ok(delete) : StatusCode(500, delete);
 			} catch (System.Exception e) {
 				return StatusCode(500, e.Message);
 			}
 		}
 
 		[HttpPatch("{id:int}")]
-		public async Task<ActionResult<bool>> Patch(int id, UpdateArtist artist) {
+		public async Task<ActionResult<Artist>> Patch(int id, UpdateArtist artist) {
 			try {
 				var update = await _artistService.UpdateOne(id, artist);
 				if (update == null) return NotFound();
