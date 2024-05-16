@@ -12,7 +12,7 @@ namespace ArtGallery {
     private static void Main(string[] args) {
       var builder = WebApplication.CreateBuilder(args);
       var Configuration = builder.Configuration;
-
+      builder.Services.AddCors(options => options.AddPolicy(name: "AllowAll", policy => { policy.AllowAnyOrigin(); }));
       builder.Services.AddEndpointsApiExplorer();
       builder.Services.AddControllers();
       builder.Services.AddSwaggerGen(c => {
@@ -44,7 +44,7 @@ namespace ArtGallery {
 
       var app = builder.Build();
       app.MapControllers();
-
+      app.UseCors("AllowAll");
       if (app.Environment.IsDevelopment()) {
         app.UseSwagger();
         app.UseSwaggerUI();
