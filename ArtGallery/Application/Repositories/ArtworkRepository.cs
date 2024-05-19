@@ -7,8 +7,13 @@ namespace ArtGallery.Repositories {
 	public class ArtworkRepository(GalleryDbContext db) : IArtworkRepository {
 		private readonly GalleryDbContext _db = db;
 
-		public Task<bool?> DeleteById(int id) {
-			throw new NotImplementedException();
+		public async Task<bool?> DeleteById(int id) {
+			var artwork = await _db.Artworks.FindAsync(id);
+			if (artwork == null) return null;
+			_db.Artworks.Remove(artwork);
+			await _db.SaveChangesAsync();
+			var verify = await _db.Artworks.FindAsync(id);
+			return verify == null;
 		}
 
 		public async Task<List<Artwork>> FindAll() {

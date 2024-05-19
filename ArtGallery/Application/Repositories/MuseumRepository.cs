@@ -53,8 +53,8 @@ namespace ArtGallery.Repositories {
 			if (museum == null) return null;
 			_db.Museums.Remove(museum);
 			await _db.SaveChangesAsync();
-			var exists = await _db.Museums.AnyAsync(a => a.MuseumId == id);
-			return !exists;
+			var exists = await _db.Museums.FindAsync(id);
+			return exists == null;
 		}
 	}
 }
