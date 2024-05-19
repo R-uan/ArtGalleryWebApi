@@ -69,14 +69,14 @@ namespace ArtGallery.Controllers {
 		public async Task<ActionResult<bool>> Delete(int id) {
 			try {
 				var delete = await _service.DeleteOne(id);
-				return delete == null ? NotFound() : delete == true ? Ok() : StatusCode(500);
-			} catch (System.Exception e) {
+                return delete == null ? NotFound(false) : Ok(true);
+            } catch (System.Exception e) {
 				return StatusCode(500, e.Message);
 			}
 		}
 
 		[HttpPatch("{id:int}")]
-		public async Task<ActionResult<bool>> Patch(int id, UpdateMuseum museum) {
+		public async Task<ActionResult<Museum?>> Patch(int id, UpdateMuseum museum) {
 			try {
 				var update = await _service.UpdateOne(id, museum);
 				if (update == null) return NotFound();

@@ -68,7 +68,7 @@ namespace ArtGallery.Controllers {
 		public async Task<ActionResult<bool>> Delete(int id) {
 			try {
 				var delete = await _service.DeleteOne(id);
-				return delete == null ? NotFound() : delete == true ? Ok() : StatusCode(500);
+				return delete == null ? NotFound(false) : Ok(true);
 			} catch (System.Exception e) {
 				return StatusCode(500, e.Message);
 			}
