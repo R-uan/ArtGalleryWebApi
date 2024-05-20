@@ -32,6 +32,7 @@ namespace ArtGallery.Integration.Tests {
             await ArtistSeeder.Seed(context);
             await MuseumSeeder.Seed(context);
             await ArtworkSeeder.Seed(context);
+            await AdminSeeder.Seed(context);
         }
 
         public async Task InitializeDatabase() {
