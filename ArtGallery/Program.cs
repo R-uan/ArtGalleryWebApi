@@ -8,6 +8,8 @@ using ArtGallery.Interfaces;
 using ArtGallery.Repositories;
 using ArtGallery.Utils.Validators;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ArtGallery {
     public class Program {
@@ -18,9 +20,7 @@ namespace ArtGallery {
             builder.Services.AddCors(options => options.AddPolicy(name: "AllowAll", policy => { policy.AllowAnyOrigin(); }));
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddControllers();
-            builder.Services.AddSwaggerGen(c => {
-                c.ResolveConflictingActions(x => x.First());
-            });
+            builder.Services.AddSwaggerGen(c => { c.ResolveConflictingActions(x => x.First()); });
 
             builder.Services.Configure<RouteOptions>(options => {
                 options.ConstraintMap.Add("string", typeof(string));
@@ -30,10 +30,25 @@ namespace ArtGallery {
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            builder.Services.AddAuthentication(cfg => {
+                cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                cfg.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(x => {
+                x.SaveToken = false;
+                x.RequireHttpsMetadata = false;
+                x.TokenValidationParameters = new TokenValidationParameters {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super-segredo-mega-super-grande-haha")),
+                };
+            });
+
             /* Admin */
+            builder.Services.AddScoped<IValidator<Admin>, AdminValidator>();
             builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<IAdminService, AdminService>();
-
             /* Artist */
             builder.Services.AddScoped<IValidator<Artist>, ArtistValidator>();
             builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
@@ -50,6 +65,7 @@ namespace ArtGallery {
             builder.Services.AddScoped<IArtworkService, ArtworkService>();
 
             var app = builder.Build();
+            app.UseAuthentication();
             app.MapControllers();
             app.UseCors("AllowAll");
             if (app.Environment.IsDevelopment()) {

@@ -3,6 +3,7 @@ using ArtGallery.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using FluentValidation;
 using FluentValidation.Results;
+using ArtGallery.Utils;
 
 
 namespace ArtGallery.Controllers {
@@ -44,6 +45,16 @@ namespace ArtGallery.Controllers {
 			}
 		}
 
+		[HttpGet("partial/paginate")]
+		public async Task<ActionResult<PaginatedResponse<Artwork>>> PaginatedPartial([FromQuery] int page_index, int page_size = 20) {
+			try {
+				var response = await _service.GetAllPartialPaginated(page_index, page_size);
+				return Ok(response);
+			} catch (System.Exception e) {
+				return StatusCode(500, e.Message);
+			}
+		}
+		
 		[HttpGet("{slug}")]
 		public async Task<ActionResult<Artwork>> OneBySlug(string slug) {
 			try {

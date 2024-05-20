@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using ArtGallery.Models;
+using ArtGallery.Utils;
 
 namespace ArtGallery.Integration.Tests.ControllerTests {
     [TestFixture]
@@ -74,6 +75,27 @@ namespace ArtGallery.Integration.Tests.ControllerTests {
             var response = await _client.GetAsync("/artwork/mona-lisa");
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
+
+        [Test]
+        public async Task Get_AllPartialPagination_ReturnsOk_Test() {
+            var request = await _client.GetAsync("/artwork/partial/paginate?page_index=1&page_size=1");
+            JObject response = JObject.Parse(await request.Content.ReadAsStringAsync());
+            Assert.Multiple(() => {
+                Assert.That(request.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+                Assert.That(response["hasNextPage"]!.ToString(), Is.EqualTo("True"));
+            });
+        }
+
+        [Test]
+        public async Task Get_AllPartialPagination2_ReturnsOk_Test() {
+            var request = await _client.GetAsync("/artwork/partial/paginate?page_index=2&page_size=1");
+            JObject response = JObject.Parse(await request.Content.ReadAsStringAsync());
+            Assert.Multiple(() => {
+                Assert.That(request.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+                Assert.That(response["hasPreviousPage"]!.ToString(), Is.EqualTo("True"));
+            });
+        }
+
 
         [Test]
         public async Task Post_OneArtworkWithOnlyRequired_ReturnsOk_Test() {

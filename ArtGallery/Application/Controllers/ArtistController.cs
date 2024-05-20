@@ -1,12 +1,12 @@
-﻿using ArtGallery.Models;
-using FluentValidation;
+﻿using FluentValidation;
+using ArtGallery.Models;
+using ArtGallery.Interfaces;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
-using ArtGallery.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ArtGallery.Controllers {
-	[ApiController]
-	[Route("/artist")]
+	[Authorize] [ApiController] [Route("/artist")]
 	public class ArtistController(IArtistService service, IValidator<Artist> validator) : ControllerBase {
 		private readonly IValidator<Artist> _validator = validator;
 		private readonly IArtistService _artistService = service;

@@ -1,5 +1,6 @@
 ﻿using ArtGallery.Models;
 using ArtGallery.Interfaces;
+using ArtGallery.Utils;
 
 namespace ArtGallery.Services {
 	public class ArtworkService(IArtworkRepository repository) : IArtworkService {
@@ -11,6 +12,10 @@ namespace ArtGallery.Services {
 
 		public async Task<List<PartialArtwork>> GetAllPartial() {
 			return await _repository.FindAllPartial();
+		}
+		
+		public async Task<PaginatedResponse<Artwork>> GetAllPartialPaginated(int page_index, int page_size) {
+			return await _repository.FindAllPartialPaginated(page_index, page_size);
 		}
 
 		public async Task<Artwork?> GetOneById(int id) {
