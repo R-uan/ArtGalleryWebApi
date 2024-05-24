@@ -36,7 +36,7 @@ namespace ArtGallery.Controllers {
 		}
 
 		[HttpGet("partial")]
-		public async Task<ActionResult<List<Museum>>> PartialMuseums() {
+		public async Task<ActionResult<List<PartialMuseum>>> PartialMuseums() {
 			try {
 				var museum = await _service.GetAllPartial();
 				return Ok(museum);
@@ -69,8 +69,8 @@ namespace ArtGallery.Controllers {
 		public async Task<ActionResult<bool>> Delete(int id) {
 			try {
 				var delete = await _service.DeleteOne(id);
-                return delete == null ? NotFound(false) : Ok(true);
-            } catch (System.Exception e) {
+				return delete == null ? NotFound(false) : Ok(true);
+			} catch (System.Exception e) {
 				return StatusCode(500, e.Message);
 			}
 		}

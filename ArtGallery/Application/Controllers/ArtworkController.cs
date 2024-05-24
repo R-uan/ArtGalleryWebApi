@@ -46,7 +46,7 @@ namespace ArtGallery.Controllers {
 		}
 
 		[HttpGet("partial/paginate")]
-		public async Task<ActionResult<PaginatedResponse<Artwork>>> PaginatedPartial([FromQuery] int page_index, int page_size = 20) {
+		public async Task<ActionResult<PaginatedResponse<PartialArtwork>>> PaginatedPartial([FromQuery] int page_index = 1, int page_size = 20) {
 			try {
 				var response = await _service.GetAllPartialPaginated(page_index, page_size);
 				return Ok(response);
@@ -54,7 +54,7 @@ namespace ArtGallery.Controllers {
 				return StatusCode(500, e.Message);
 			}
 		}
-		
+
 		[HttpGet("{slug}")]
 		public async Task<ActionResult<Artwork>> OneBySlug(string slug) {
 			try {
@@ -86,7 +86,7 @@ namespace ArtGallery.Controllers {
 		}
 
 		[HttpPatch("{id:int}")]
-		public async Task<ActionResult<bool>> Patch(int id, UpdateArtwork artwork) {
+		public async Task<ActionResult<Artwork>> Patch(int id, UpdateArtwork artwork) {
 			try {
 				var update = await _service.UpdateOne(id, artwork);
 				if (update == null) return NotFound();

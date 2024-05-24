@@ -11,7 +11,7 @@ namespace ArtGallery.Repositories {
 		}
 
 		public async Task<List<PartialArtist>> FindAllPartial() {
-			return await _db.Artists.Select(artist => new PartialArtist(artist.Name, artist.Slug)).ToListAsync();
+			return await _db.Artists.Select(artist => new PartialArtist(artist.Name, artist.Slug, artist.ArtistId)).ToListAsync();
 		}
 
 		public async Task<Artist?> FindById(int id) {

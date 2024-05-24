@@ -18,7 +18,7 @@ namespace ArtGallery.Repositories {
 		}
 
 		public async Task<List<PartialMuseum>> FindAllPartial() {
-			return await _db.Museums.Select(m => new PartialMuseum(m.Name, m.Country)).ToListAsync();
+			return await _db.Museums.Select(m => new PartialMuseum(m.MuseumId, m.Name, m.Country)).ToListAsync();
 		}
 
 		public async Task<Museum?> FindById(int id) {

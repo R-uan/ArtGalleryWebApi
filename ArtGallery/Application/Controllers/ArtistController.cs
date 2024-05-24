@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ArtGallery.Controllers {
-	[ApiController] [Route("/artist")]
+	[ApiController]
+	[Route("/artist")]
 	public class ArtistController(IArtistService service, IValidator<Artist> validator) : ControllerBase {
 		private readonly IValidator<Artist> _validator = validator;
 		private readonly IArtistService _artistService = service;
@@ -34,7 +35,7 @@ namespace ArtGallery.Controllers {
 		}
 
 		[HttpGet("partial")]
-		public async Task<ActionResult<List<Artist>>> PartialArtists() {
+		public async Task<ActionResult<List<PartialArtist>>> PartialArtists() {
 			try {
 				var artists = await _artistService.GetAllPartial();
 				return Ok(artists);
@@ -68,8 +69,8 @@ namespace ArtGallery.Controllers {
 		public async Task<ActionResult<bool>> Delete(int id) {
 			try {
 				var delete = await _artistService.DeleteOne(id);
-                return delete == null ? NotFound(false) : Ok(true);
-            } catch (System.Exception e) {
+				return delete == null ? NotFound(false) : Ok(true);
+			} catch (System.Exception e) {
 				return StatusCode(500, e.Message);
 			}
 		}

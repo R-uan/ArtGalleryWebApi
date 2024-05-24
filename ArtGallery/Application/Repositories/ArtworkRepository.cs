@@ -21,26 +21,32 @@ namespace ArtGallery.Repositories {
 			return await _db.Artworks.ToListAsync();
 		}
 
-		public async Task<PaginatedResponse<Artwork>> FindAllPartialPaginated(int page_index, int page_size) {
+		public async Task<PaginatedResponse<PartialArtwork>> FindAllPartialPaginated(int page_index, int page_size) {
 			var artworks = await _db.Artworks
 				.OrderBy(artworks => artworks.ArtworkId)
 				.Skip((page_index - 1) * page_size)
 				.Take(page_size)
-				.ToListAsync();
-			
+				.Join(_db.Artists,
+				artwork => artwork.ArtistId, artist => artist.ArtistId,
+				(artwork, artist) => new PartialArtwork(artwork.ArtworkId, artwork.Title, artwork.Slug, artwork.ImageURL, artist.Name)).ToListAsync();
+
 			var count = await _db.Artworks.CountAsync();
 			int total_pages = (int)Math.Ceiling(count / (double)page_size);
-			return new PaginatedResponse<Artwork>(artworks, page_index, total_pages);
+			return new PaginatedResponse<PartialArtwork>(artworks, page_index, total_pages);
 		}
 
 		public async Task<List<PartialArtwork>> FindAllPartial() {
 			return await _db.Artworks.Join(_db.Artists,
 				artwork => artwork.ArtistId, artist => artist.ArtistId,
-				(artwork, artist) => new PartialArtwork(artwork.Title, artwork.Slug, artwork.ImageURL, artist.Name)).ToListAsync();
+				(artwork, artist) => new PartialArtwork(artwork.ArtworkId, artwork.Title, artwork.Slug, artwork.ImageURL, artist.Name)).ToListAsync();
 		}
 
 		public async Task<Artwork?> FindById(int id) {
-			return await _db.Artworks.FindAsync(id);
+			return await _db.Artworks
+			.Include(artwork => artwork.Artist)
+			.Include(artwork => artwork.Museum)
+			.Where(a => a.ArtworkId == id)
+			.FirstOrDefaultAsync();
 		}
 
 		public async Task<Artwork?> FindBySlug(string slug) {
@@ -71,7 +77,11 @@ namespace ArtGallery.Repositories {
 				if (patch.MuseumId.HasValue && patch.MuseumId != null) artwork.MuseumId = (int)patch.MuseumId;
 
 				await _db.SaveChangesAsync();
-				return await _db.Artworks.FindAsync(id);
+				return await _db.Artworks
+			.Include(artwork => artwork.Artist)
+			.Include(artwork => artwork.Museum)
+			.Where(a => a.ArtworkId == id)
+			.FirstOrDefaultAsync();
 			}
 
 			throw new Exception();

@@ -17,7 +17,11 @@ namespace ArtGallery {
             var builder = WebApplication.CreateBuilder(args);
             var Configuration = builder.Configuration;
 
-            builder.Services.AddCors(options => options.AddPolicy(name: "AllowAll", policy => { policy.AllowAnyOrigin(); }));
+            builder.Services.AddCors(options => options.AddPolicy(name: "AllowAll", policy => {
+                policy.AllowAnyOrigin();
+                policy.AllowAnyHeader();
+                policy.AllowAnyMethod();
+            }));
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddControllers();
             builder.Services.AddSwaggerGen(c => { c.ResolveConflictingActions(x => x.First()); });
