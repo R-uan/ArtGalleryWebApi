@@ -1,5 +1,5 @@
-﻿namespace ArtGallery.Models {
-	public class UpdateMuseum {
+﻿namespace ArtGallery.DTO {
+	public class UpdateMuseumDTO {
 		public int? Inauguration { get; set; }
 		public string? Slug { get; set; }
 		public string? Name { get; set; }

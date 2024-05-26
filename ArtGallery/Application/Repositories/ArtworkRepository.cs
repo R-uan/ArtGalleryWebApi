@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ArtGallery.Interfaces;
 using Microsoft.EntityFrameworkCore.Internal;
 using ArtGallery.Utils;
+using ArtGallery.DTO;
 
 namespace ArtGallery.Repositories {
 	public class ArtworkRepository(GalleryDbContext db) : IArtworkRepository {
@@ -21,24 +22,24 @@ namespace ArtGallery.Repositories {
 			return await _db.Artworks.ToListAsync();
 		}
 
-		public async Task<PaginatedResponse<PartialArtwork>> FindAllPartialPaginated(int page_index, int page_size) {
+		public async Task<PaginatedResponse<PartialArtworkDTO>> FindAllPartialPaginated(int page_index, int page_size) {
 			var artworks = await _db.Artworks
 				.OrderBy(artworks => artworks.ArtworkId)
 				.Skip((page_index - 1) * page_size)
 				.Take(page_size)
 				.Join(_db.Artists,
 				artwork => artwork.ArtistId, artist => artist.ArtistId,
-				(artwork, artist) => new PartialArtwork(artwork.ArtworkId, artwork.Title, artwork.Slug, artwork.ImageURL, artist.Name)).ToListAsync();
+				(artwork, artist) => new PartialArtworkDTO(artwork.ArtworkId, artwork.Title, artwork.Slug, artwork.ImageURL, artist.Name)).ToListAsync();
 
 			var count = await _db.Artworks.CountAsync();
 			int total_pages = (int)Math.Ceiling(count / (double)page_size);
-			return new PaginatedResponse<PartialArtwork>(artworks, page_index, total_pages);
+			return new PaginatedResponse<PartialArtworkDTO>(artworks, page_index, total_pages);
 		}
 
-		public async Task<List<PartialArtwork>> FindAllPartial() {
+		public async Task<List<PartialArtworkDTO>> FindAllPartial() {
 			return await _db.Artworks.Join(_db.Artists,
 				artwork => artwork.ArtistId, artist => artist.ArtistId,
-				(artwork, artist) => new PartialArtwork(artwork.ArtworkId, artwork.Title, artwork.Slug, artwork.ImageURL, artist.Name)).ToListAsync();
+				(artwork, artist) => new PartialArtworkDTO(artwork.ArtworkId, artwork.Title, artwork.Slug, artwork.ImageURL, artist.Name)).ToListAsync();
 		}
 
 		public async Task<Artwork?> FindById(int id) {
@@ -63,7 +64,7 @@ namespace ArtGallery.Repositories {
 			return artwork.Entity;
 		}
 
-		public async Task<Artwork?> UpdateById(int id, UpdateArtwork patch) {
+		public async Task<Artwork?> UpdateById(int id, UpdateArtworkDTO patch) {
 			var artwork = await _db.Artworks.FindAsync(id);
 			if (artwork == null) return null;
 			else if (patch != null) {

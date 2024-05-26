@@ -1,6 +1,6 @@
 ﻿namespace ArtGallery.Interfaces {
-	public interface IBaseService<TEntity, UEntity, PEntity> {
-		public Task<TEntity> PostOne(TEntity artist);
+	public interface IBaseService<TEntity, TEntityDTO, UEntity, PEntity> {
+		public Task<TEntity> PostOne(TEntityDTO artist);
 		public Task<TEntity?> GetOneById(int id);
 		public Task<TEntity?> GetOneBySlug(string slug);
 

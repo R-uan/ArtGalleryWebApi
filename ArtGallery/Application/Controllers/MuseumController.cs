@@ -5,6 +5,7 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ArtGallery.Interfaces;
+using ArtGallery.DTO;
 
 namespace ArtGallery.Controllers {
 	[ApiController]
@@ -24,10 +25,9 @@ namespace ArtGallery.Controllers {
 		}
 
 		[HttpPost]
-		public async Task<ActionResult<Museum>> Post(Museum museum) {
+		public async Task<ActionResult<Museum>> Post(MuseumDTO museum) {
 			try {
-				ValidationResult validation = _validator.Validate(museum);
-				if (!validation.IsValid) return BadRequest(validation.Errors);
+				if (!ModelState.IsValid) return BadRequest(ModelState);
 				var create_museum = await _service.PostOne(museum);
 				return create_museum;
 			} catch (System.Exception e) {
@@ -36,7 +36,7 @@ namespace ArtGallery.Controllers {
 		}
 
 		[HttpGet("partial")]
-		public async Task<ActionResult<List<PartialMuseum>>> PartialMuseums() {
+		public async Task<ActionResult<List<PartialMuseumDTO>>> PartialMuseums() {
 			try {
 				var museum = await _service.GetAllPartial();
 				return Ok(museum);
@@ -76,7 +76,7 @@ namespace ArtGallery.Controllers {
 		}
 
 		[HttpPatch("{id:int}")]
-		public async Task<ActionResult<Museum?>> Patch(int id, UpdateMuseum museum) {
+		public async Task<ActionResult<Museum?>> Patch(int id, UpdateMuseumDTO museum) {
 			try {
 				var update = await _service.UpdateOne(id, museum);
 				if (update == null) return NotFound();

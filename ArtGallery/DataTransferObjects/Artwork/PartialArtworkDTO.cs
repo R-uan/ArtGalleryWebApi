@@ -1,5 +1,5 @@
-﻿namespace ArtGallery.Models {
-	public class PartialArtwork(int id, string title, string slug, string image, string artist) {
+﻿namespace ArtGallery.DTO {
+	public class PartialArtworkDTO(int id, string title, string slug, string image, string artist) {
 		public int ArtworkId { get; set; } = id;
 		public string Title { get; set; } = title;
 		public string Slug { get; set; } = slug;

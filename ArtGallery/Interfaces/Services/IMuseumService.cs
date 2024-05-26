@@ -1,5 +1,6 @@
-﻿using ArtGallery.Models;
+﻿using ArtGallery.DTO;
+using ArtGallery.Models;
 
 namespace ArtGallery.Interfaces {
-	public interface IMuseumService : IBaseService<Museum, UpdateMuseum, PartialMuseum> { }
+	public interface IMuseumService : IBaseService<Museum, MuseumDTO, UpdateMuseumDTO, PartialMuseumDTO> { }
 }

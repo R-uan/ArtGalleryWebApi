@@ -1,6 +1,7 @@
 ﻿using ArtGallery.Models;
 using Microsoft.EntityFrameworkCore;
 using ArtGallery.Interfaces;
+using ArtGallery.DTO;
 
 namespace ArtGallery.Repositories {
 	public class MuseumRepository(GalleryDbContext db) : IMuseumRepository {
@@ -17,8 +18,8 @@ namespace ArtGallery.Repositories {
 			return await _db.Museums.ToListAsync();
 		}
 
-		public async Task<List<PartialMuseum>> FindAllPartial() {
-			return await _db.Museums.Select(m => new PartialMuseum(m.MuseumId, m.Name, m.Country)).ToListAsync();
+		public async Task<List<PartialMuseumDTO>> FindAllPartial() {
+			return await _db.Museums.Select(m => new PartialMuseumDTO(m.MuseumId, m.Name, m.Country)).ToListAsync();
 		}
 
 		public async Task<Museum?> FindById(int id) {
@@ -29,7 +30,7 @@ namespace ArtGallery.Repositories {
 			return await _db.Museums.Where(museum => museum.Slug == slug).FirstOrDefaultAsync();
 		}
 
-		public async Task<Museum?> UpdateById(int id, UpdateMuseum patch) {
+		public async Task<Museum?> UpdateById(int id, UpdateMuseumDTO patch) {
 			var museum = await _db.Museums.FindAsync(id);
 			if (museum == null) return null;
 			if (patch != null) {

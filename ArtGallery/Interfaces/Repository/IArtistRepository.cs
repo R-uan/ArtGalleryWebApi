@@ -1,5 +1,6 @@
-﻿using ArtGallery.Models;
+﻿using ArtGallery.DTO;
+using ArtGallery.Models;
 
 namespace ArtGallery.Interfaces {
-	public interface IArtistRepository : IBaseRepository<Artist, UpdateArtist, PartialArtist> { }
+	public interface IArtistRepository : IBaseRepository<Artist, UpdateArtistDTO, PartialArtistDTO> { }
 }

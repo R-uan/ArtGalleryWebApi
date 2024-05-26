@@ -1,6 +1,7 @@
 ﻿using ArtGallery.Models;
 using Microsoft.EntityFrameworkCore;
 using ArtGallery.Interfaces;
+using ArtGallery.DTO;
 
 namespace ArtGallery.Repositories {
 	public class ArtistRepository(GalleryDbContext db) : IArtistRepository {
@@ -10,8 +11,8 @@ namespace ArtGallery.Repositories {
 			return await _db.Artists.ToListAsync();
 		}
 
-		public async Task<List<PartialArtist>> FindAllPartial() {
-			return await _db.Artists.Select(artist => new PartialArtist(artist.Name, artist.Slug, artist.ArtistId)).ToListAsync();
+		public async Task<List<PartialArtistDTO>> FindAllPartial() {
+			return await _db.Artists.Select(artist => new PartialArtistDTO(artist.Name, artist.Slug, artist.ArtistId)).ToListAsync();
 		}
 
 		public async Task<Artist?> FindById(int id) {
@@ -22,7 +23,7 @@ namespace ArtGallery.Repositories {
 			return await _db.Artists.Where(artist => artist.Slug == slug).FirstOrDefaultAsync();
 		}
 
-		public async Task<Artist?> UpdateById(int id, UpdateArtist patch) {
+		public async Task<Artist?> UpdateById(int id, UpdateArtistDTO patch) {
 			var artist = await _db.Artists.FindAsync(id);
 			if (artist == null) return null;
 			if (patch != null) {

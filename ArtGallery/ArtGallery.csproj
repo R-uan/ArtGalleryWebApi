@@ -29,7 +29,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Using Include="BCrypt.Net.BCrypt" Alias="BC"/>
+    <Using Include="BCrypt.Net.BCrypt" Alias="BC" />
   </ItemGroup>
 
 </Project>

@@ -4,6 +4,7 @@ using ArtGallery.Interfaces;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using ArtGallery.DTO;
 
 namespace ArtGallery.Controllers {
 	[ApiController]
@@ -23,10 +24,9 @@ namespace ArtGallery.Controllers {
 		}
 
 		[HttpPost]
-		public async Task<ActionResult<Artist>> Post(Artist artist) {
+		public async Task<ActionResult<Artist>> Post([FromBody] ArtistDTO artist) {
 			try {
-				ValidationResult validation = _validator.Validate(artist);
-				if (!validation.IsValid) return BadRequest(validation.Errors);
+				if (!ModelState.IsValid) return BadRequest(ModelState);
 				var create_artist = await _artistService.PostOne(artist);
 				return Ok(create_artist);
 			} catch (System.Exception e) {
@@ -35,7 +35,7 @@ namespace ArtGallery.Controllers {
 		}
 
 		[HttpGet("partial")]
-		public async Task<ActionResult<List<PartialArtist>>> PartialArtists() {
+		public async Task<ActionResult<List<PartialArtistDTO>>> PartialArtists() {
 			try {
 				var artists = await _artistService.GetAllPartial();
 				return Ok(artists);
@@ -76,7 +76,7 @@ namespace ArtGallery.Controllers {
 		}
 
 		[HttpPatch("{id:int}")]
-		public async Task<ActionResult<Artist>> Patch(int id, UpdateArtist artist) {
+		public async Task<ActionResult<Artist>> Patch(int id, [FromBody] UpdateArtistDTO artist) {
 			try {
 				var update = await _artistService.UpdateOne(id, artist);
 				if (update == null) return NotFound();

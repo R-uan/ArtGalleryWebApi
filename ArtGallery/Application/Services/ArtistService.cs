@@ -1,5 +1,6 @@
 ﻿using ArtGallery.Models;
 using ArtGallery.Interfaces;
+using ArtGallery.DTO;
 
 namespace ArtGallery.Services {
 	public class ArtistService(IArtistRepository repository) : IArtistService {
@@ -10,7 +11,7 @@ namespace ArtGallery.Services {
 			return await _repository.FindAll();
 		}
 
-		public async Task<List<PartialArtist>> GetAllPartial() {
+		public async Task<List<PartialArtistDTO>> GetAllPartial() {
 			return await _repository.FindAllPartial();
 		}
 
@@ -18,11 +19,21 @@ namespace ArtGallery.Services {
 			return await _repository.FindById(id);
 		}
 
-		public async Task<Artist> PostOne(Artist artist) {
-			return await _repository.SaveOne(artist);
+		public async Task<Artist> PostOne(ArtistDTO artist) {
+			Artist mapping = new() {
+				Name = artist.Name,
+				Slug = artist.Slug,
+				Country = artist.Country,
+				Biography = artist.Biography,
+				Movement = artist.Movement,
+				Profession = artist.Profession,
+				Date_of_birth = artist.Date_of_birth,
+				Date_of_death = artist.Date_of_death,
+			};
+			return await _repository.SaveOne(mapping);
 		}
 
-		public async Task<Artist?> UpdateOne(int id, UpdateArtist artist) {
+		public async Task<Artist?> UpdateOne(int id, UpdateArtistDTO artist) {
 			return await _repository.UpdateById(id, artist);
 		}
 

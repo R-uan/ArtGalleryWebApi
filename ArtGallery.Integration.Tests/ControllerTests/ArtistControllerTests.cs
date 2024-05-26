@@ -76,7 +76,7 @@ namespace ArtGallery.Integration.Tests.ControllerTests {
 
         [Test]
         public async Task Post_OneArtistWithOnlyRequired_ReturnsOk_Test() {
-            var artist = new { Name = "Leonardo Da Vinci", Slug = "da-vinki-question-mark" };
+            var artist = new { Name = "Leonardo Da Vinci", Slug = "da-vinki-question-mark", Country = "Italy" };
             var request_body = JsonContent.Create(artist);
             var request = await _client.PostAsync("/artist", request_body);
             Assert.That(request.StatusCode, Is.EqualTo(HttpStatusCode.OK));
