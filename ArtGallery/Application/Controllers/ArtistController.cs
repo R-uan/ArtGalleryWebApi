@@ -5,19 +5,29 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using ArtGallery.DTO;
+using ArtGallery.Utils;
 
 namespace ArtGallery.Controllers {
 	[ApiController]
 	[Route("/artist")]
 	public class ArtistController(IArtistService service, IValidator<Artist> validator) : ControllerBase {
 		private readonly IValidator<Artist> _validator = validator;
-		private readonly IArtistService _artistService = service;
+		private readonly IArtistService _service = service;
 
 		[HttpGet]
 		public async Task<ActionResult<List<Artist>>> All() {
 			try {
-				var artists = await _artistService.GetAll();
+				var artists = await _service.GetAll();
 				return Ok(artists);
+			} catch (System.Exception e) {
+				return StatusCode(500, e.Message);
+			}
+		}
+		[HttpGet("artist/partial")]
+		public async Task<ActionResult<PaginatedResponse<PartialArtistDTO>>> PaginatedPartial([FromQuery] int page_index = 1, int page_size = 20) {
+			try {
+				var response = await _service.GetAllPartialPaginated(page_index, page_size);
+				return Ok(response);
 			} catch (System.Exception e) {
 				return StatusCode(500, e.Message);
 			}
@@ -27,7 +37,7 @@ namespace ArtGallery.Controllers {
 		public async Task<ActionResult<Artist>> Post([FromBody] ArtistDTO artist) {
 			try {
 				if (!ModelState.IsValid) return BadRequest(ModelState);
-				var create_artist = await _artistService.PostOne(artist);
+				var create_artist = await _service.PostOne(artist);
 				return Ok(create_artist);
 			} catch (System.Exception e) {
 				return StatusCode(500, e.Message);
@@ -37,7 +47,7 @@ namespace ArtGallery.Controllers {
 		[HttpGet("partial")]
 		public async Task<ActionResult<List<PartialArtistDTO>>> PartialArtists() {
 			try {
-				var artists = await _artistService.GetAllPartial();
+				var artists = await _service.GetAllPartial();
 				return Ok(artists);
 			} catch (System.Exception e) {
 				return StatusCode(500, e.Message);
@@ -47,7 +57,7 @@ namespace ArtGallery.Controllers {
 		[HttpGet("{slug}")]
 		public async Task<ActionResult<Artist>> OneBySlug(string slug) {
 			try {
-				var artist = await _artistService.GetOneBySlug(slug);
+				var artist = await _service.GetOneBySlug(slug);
 				return artist != null ? Ok(artist) : NotFound();
 			} catch (System.Exception e) {
 				return StatusCode(500, e.Message);
@@ -58,7 +68,7 @@ namespace ArtGallery.Controllers {
 		[HttpGet("{id:int}")]
 		public async Task<ActionResult<Artist>> OneById(int id) {
 			try {
-				var artist = await _artistService.GetOneById(id);
+				var artist = await _service.GetOneById(id);
 				return artist != null ? Ok(artist) : NotFound();
 			} catch (System.Exception e) {
 				return StatusCode(500, e.Message);
@@ -68,7 +78,7 @@ namespace ArtGallery.Controllers {
 		[HttpDelete("{id:int}")]
 		public async Task<ActionResult<bool>> Delete(int id) {
 			try {
-				var delete = await _artistService.DeleteOne(id);
+				var delete = await _service.DeleteOne(id);
 				return delete == null ? NotFound(false) : Ok(true);
 			} catch (System.Exception e) {
 				return StatusCode(500, e.Message);
@@ -78,7 +88,7 @@ namespace ArtGallery.Controllers {
 		[HttpPatch("{id:int}")]
 		public async Task<ActionResult<Artist>> Patch(int id, [FromBody] UpdateArtistDTO artist) {
 			try {
-				var update = await _artistService.UpdateOne(id, artist);
+				var update = await _service.UpdateOne(id, artist);
 				if (update == null) return NotFound();
 				return Ok(update);
 			} catch (System.Exception e) {

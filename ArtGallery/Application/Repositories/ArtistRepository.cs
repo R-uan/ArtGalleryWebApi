@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ArtGallery.Interfaces;
 using ArtGallery.DTO;
+using ArtGallery.Utils;
 
 namespace ArtGallery.Repositories {
 	public class ArtistRepository(GalleryDbContext db) : IArtistRepository {
@@ -56,5 +57,18 @@ namespace ArtGallery.Repositories {
 			await _db.SaveChangesAsync();
 			return artist_entity.Entity;
 		}
-	}
+
+        public async Task<PaginatedResponse<PartialArtistDTO>> FindAllPartialPaginated(int page_index, int page_size) {
+			var artworks = await _db.Artists
+				.OrderBy(artist => artist.ArtistId)
+				.Skip((page_index - 1) * page_size)
+				.Take(page_size)
+				.Select(artist => new PartialArtistDTO() { Name = artist.Name, ArtistId = artist.ArtistId, Slug = artist.Slug })
+				.ToListAsync();
+
+            var count = await _db.Artists.CountAsync();
+            int total_pages = (int)Math.Ceiling(count / (double)page_size);
+            return new PaginatedResponse<PartialArtistDTO>(artworks, page_index, total_pages);
+        }
+    }
 }

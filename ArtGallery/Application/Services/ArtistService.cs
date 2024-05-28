@@ -1,6 +1,7 @@
 ﻿using ArtGallery.Models;
 using ArtGallery.Interfaces;
 using ArtGallery.DTO;
+using ArtGallery.Utils;
 
 namespace ArtGallery.Services {
 	public class ArtistService(IArtistRepository repository) : IArtistService {
@@ -44,5 +45,9 @@ namespace ArtGallery.Services {
 		public async Task<Artist?> GetOneBySlug(string slug) {
 			return await _repository.FindBySlug(slug);
 		}
-	}
+
+        public async Task<PaginatedResponse<PartialArtistDTO>> GetAllPartialPaginated(int page_index, int page_size) {
+            return await _repository.FindAllPartialPaginated(page_index, page_size);
+        }
+    }
 }
