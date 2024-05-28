@@ -6,7 +6,6 @@
 		public string? Movement { get; set; }
 		public string? Biography { get; set; }
 		public string? Profession { get; set; }
-		public DateTime? Date_of_birth { get; set; }
-		public DateTime? Date_of_death { get; set; }
+		public string? ImageURL { get; set; }
 	}
 }

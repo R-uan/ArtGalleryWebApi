@@ -10,8 +10,7 @@ namespace ArtGallery.Models {
 		public string? Profession { get; set; }
 		public required string Name { get; set; }
 		public required string Slug { get; set; }
-		public DateTime? Date_of_birth { get; set; }
-		public DateTime? Date_of_death { get; set; }
+		public required string ImageURL { get; set; }
 		[JsonIgnore] public ICollection<Artwork>? Artworks { get; set; }
 	}
 }

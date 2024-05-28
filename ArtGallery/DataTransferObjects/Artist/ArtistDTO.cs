@@ -8,13 +8,10 @@ namespace ArtGallery.DTO {
 		public required string Slug { get; set; }
 		[Required(ErrorMessage = "Country required", AllowEmptyStrings = false)]
 		public required string Country { get; set; }
-
+		[Required(ErrorMessage = "Portrait required", AllowEmptyStrings = false)]
+		public required string ImageURL { get; set; }
 		public string? Movement { get; set; }
 		public string? Biography { get; set; }
 		public string? Profession { get; set; }
-
-		public DateTime? Date_of_birth { get; set; }
-		public DateTime? Date_of_death { get; set; }
-
 	}
 }

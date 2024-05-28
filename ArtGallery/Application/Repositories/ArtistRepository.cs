@@ -13,7 +13,7 @@ namespace ArtGallery.Repositories {
 		}
 
 		public async Task<List<PartialArtistDTO>> FindAllPartial() {
-			return await _db.Artists.Select(artist => new PartialArtistDTO(artist.Name, artist.Slug, artist.ArtistId)).ToListAsync();
+			return await _db.Artists.Select(artist => new PartialArtistDTO(artist.Name, artist.Slug, artist.ArtistId, artist.ImageURL)).ToListAsync();
 		}
 
 		public async Task<Artist?> FindById(int id) {
@@ -32,9 +32,7 @@ namespace ArtGallery.Repositories {
 				if (!string.IsNullOrEmpty(patch.Country)) artist.Country = patch.Country;
 				if (!string.IsNullOrEmpty(patch.Slug)) artist.Slug = patch.Slug;
 				if (!string.IsNullOrEmpty(patch.Biography)) artist.Biography = patch.Biography;
-
-				if (patch.Date_of_birth != null) artist.Date_of_birth = patch.Date_of_birth;
-				if (patch.Date_of_death != null) artist.Date_of_death = patch.Date_of_death;
+				if (!string.IsNullOrEmpty(patch.ImageURL)) artist.ImageURL = patch.ImageURL;
 
 				await _db.SaveChangesAsync();
 				return await _db.Artists.FindAsync(id);
@@ -58,7 +56,7 @@ namespace ArtGallery.Repositories {
 			return artist_entity.Entity;
 		}
 
-        public async Task<PaginatedResponse<PartialArtistDTO>> FindAllPartialPaginated(int page_index, int page_size) {
+		public async Task<PaginatedResponse<PartialArtistDTO>> FindAllPartialPaginated(int page_index, int page_size) {
 			var artworks = await _db.Artists
 				.OrderBy(artist => artist.ArtistId)
 				.Skip((page_index - 1) * page_size)
@@ -66,9 +64,9 @@ namespace ArtGallery.Repositories {
 				.Select(artist => new PartialArtistDTO() { Name = artist.Name, ArtistId = artist.ArtistId, Slug = artist.Slug })
 				.ToListAsync();
 
-            var count = await _db.Artists.CountAsync();
-            int total_pages = (int)Math.Ceiling(count / (double)page_size);
-            return new PaginatedResponse<PartialArtistDTO>(artworks, page_index, total_pages);
-        }
-    }
+			var count = await _db.Artists.CountAsync();
+			int total_pages = (int)Math.Ceiling(count / (double)page_size);
+			return new PaginatedResponse<PartialArtistDTO>(artworks, page_index, total_pages);
+		}
+	}
 }
