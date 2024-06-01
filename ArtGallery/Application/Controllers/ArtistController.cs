@@ -23,7 +23,7 @@ namespace ArtGallery.Controllers {
 				return StatusCode(500, e.Message);
 			}
 		}
-		[HttpGet("artist/partial")]
+		[HttpGet("partial/paginate")]
 		public async Task<ActionResult<PaginatedResponse<PartialArtistDTO>>> PaginatedPartial([FromQuery] int page_index = 1, int page_size = 20) {
 			try {
 				var response = await _service.GetAllPartialPaginated(page_index, page_size);

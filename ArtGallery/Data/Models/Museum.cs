@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace ArtGallery.Models {
 	public class Museum {
+		public int MuseumId { get; set; }
 		public string? City { get; set; }
 		public string? State { get; set; }
 		public float? Latitude { get; set; }
@@ -11,7 +12,6 @@ namespace ArtGallery.Models {
 		public required string Slug { get; set; }
 		public required string Name { get; set; }
 		public required string Country { get; set; }
-		public int MuseumId { get; set; }
 		[JsonIgnore] public ICollection<Artwork>? Artworks { get; set; }
 	}
 }

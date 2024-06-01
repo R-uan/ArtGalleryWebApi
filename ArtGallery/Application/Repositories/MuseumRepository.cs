@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ArtGallery.Interfaces;
 using ArtGallery.DTO;
+using ArtGallery.Utils;
 
 namespace ArtGallery.Repositories {
 	public class MuseumRepository(GalleryDbContext db) : IMuseumRepository {
@@ -19,7 +20,7 @@ namespace ArtGallery.Repositories {
 		}
 
 		public async Task<List<PartialMuseumDTO>> FindAllPartial() {
-			return await _db.Museums.Select(m => new PartialMuseumDTO(m.MuseumId, m.Name, m.Country)).ToListAsync();
+			return await _db.Museums.Select(m => new PartialMuseumDTO(m.MuseumId, m.Name, m.Country, m.Slug)).ToListAsync();
 		}
 
 		public async Task<Museum?> FindById(int id) {
@@ -56,6 +57,23 @@ namespace ArtGallery.Repositories {
 			await _db.SaveChangesAsync();
 			var exists = await _db.Museums.FindAsync(id);
 			return exists == null;
+		}
+
+		public async Task<PaginatedResponse<PartialMuseumDTO>> FindAllPartialPaginated(int page_index, int page_size) {
+			var museums = await _db.Museums
+							.OrderBy(m => m.MuseumId)
+							.Skip((page_index - 1) * page_size)
+							.Take(page_size)
+							.Select(m => new PartialMuseumDTO() {
+								MuseumId = m.MuseumId,
+								Slug = m.Slug,
+								Name = m.Name,
+								Country = m.Country,
+							}).ToListAsync();
+
+			var count = await _db.Museums.CountAsync();
+			int total_pages = (int)Math.Ceiling(count / (double)page_size);
+			return new PaginatedResponse<PartialMuseumDTO>(museums, page_index, total_pages);
 		}
 	}
 }

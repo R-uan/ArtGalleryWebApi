@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ArtGallery.Interfaces;
 using ArtGallery.DTO;
+using ArtGallery.Utils;
 
 namespace ArtGallery.Controllers {
 	[ApiController]
@@ -40,6 +41,16 @@ namespace ArtGallery.Controllers {
 			try {
 				var museum = await _service.GetAllPartial();
 				return Ok(museum);
+			} catch (System.Exception e) {
+				return StatusCode(500, e.Message);
+			}
+		}
+
+		[HttpGet("partial/paginate")]
+		public async Task<ActionResult<PaginatedResponse<PartialMuseumDTO>>> PaginatedPartial([FromQuery] int page_index = 1, int page_size = 20) {
+			try {
+				var response = await _service.GetAllPartialPaginated(page_index, page_size);
+				return Ok(response);
 			} catch (System.Exception e) {
 				return StatusCode(500, e.Message);
 			}

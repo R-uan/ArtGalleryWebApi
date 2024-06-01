@@ -61,7 +61,7 @@ namespace ArtGallery.Repositories {
 				.OrderBy(artist => artist.ArtistId)
 				.Skip((page_index - 1) * page_size)
 				.Take(page_size)
-				.Select(artist => new PartialArtistDTO() { Name = artist.Name, ArtistId = artist.ArtistId, Slug = artist.Slug })
+				.Select(artist => new PartialArtistDTO() { Name = artist.Name, ArtistId = artist.ArtistId, Slug = artist.Slug, ImageURL = artist.ImageURL })
 				.ToListAsync();
 
 			var count = await _db.Artists.CountAsync();

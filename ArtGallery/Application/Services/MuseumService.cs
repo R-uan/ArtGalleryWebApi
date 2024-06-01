@@ -1,6 +1,7 @@
 ﻿using ArtGallery.Models;
 using ArtGallery.Interfaces;
 using ArtGallery.DTO;
+using ArtGallery.Utils;
 
 namespace ArtGallery.Services {
 	public class MuseumService(IMuseumRepository repository) : IMuseumService {
@@ -44,5 +45,8 @@ namespace ArtGallery.Services {
 			return await _repository.FindAllPartial();
 		}
 
+		public async Task<PaginatedResponse<PartialMuseumDTO>> GetAllPartialPaginated(int page_index, int page_size) {
+			return await _repository.FindAllPartialPaginated(page_index, page_size);
+		}
 	}
 }
