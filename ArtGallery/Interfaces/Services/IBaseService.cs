@@ -1,13 +1,17 @@
-﻿namespace ArtGallery.Interfaces {
+﻿using ArtGallery.Utils;
+
+namespace ArtGallery.Interfaces {
 	public interface IBaseService<TEntity, TEntityDTO, UEntity, PEntity> {
-		public Task<TEntity> PostOne(TEntityDTO artist);
-		public Task<TEntity?> GetOneById(int id);
-		public Task<TEntity?> GetOneBySlug(string slug);
+		Task<TEntity> PostOne(TEntityDTO artist);
+		Task<TEntity?> GetOneById(int id);
+		Task<TEntity?> GetOneBySlug(string slug);
 
-		public Task<List<TEntity>> GetAll();
-		public Task<List<PEntity>> GetAllPartial();
+		Task<List<TEntity>> GetAll();
+		Task<List<PEntity>> GetAllPartial();
 
-		public Task<bool?> DeleteOne(int id);
-		public Task<TEntity?> UpdateOne(int id, UEntity artist);
+		Task<bool?> DeleteOne(int id);
+		Task<TEntity?> UpdateOne(int id, UEntity artist);
+		Task<PaginatedResponse<PEntity>> GetAllPartialPaginated(int page_index, int page_size);
+
 	}
 }

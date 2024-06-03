@@ -16,6 +16,19 @@ namespace ArtGallery.Repositories {
 			return await _db.Artists.Select(artist => new PartialArtistDTO(artist.Name, artist.Slug, artist.ArtistId, artist.ImageURL)).ToListAsync();
 		}
 
+		public async Task<PaginatedResponse<PartialArtistDTO>> FindAllPartialPaginated(int page_index, int page_size) {
+			var artworks = await _db.Artists
+				.OrderBy(artist => artist.ArtistId)
+				.Skip((page_index - 1) * page_size)
+				.Take(page_size)
+				.Select(artist => new PartialArtistDTO() { Name = artist.Name, ArtistId = artist.ArtistId, Slug = artist.Slug, ImageURL = artist.ImageURL })
+				.ToListAsync();
+
+			var count = await _db.Artists.CountAsync();
+			int total_pages = (int)Math.Ceiling(count / (double)page_size);
+			return new PaginatedResponse<PartialArtistDTO>(artworks, page_index, total_pages);
+		}
+
 		public async Task<Artist?> FindById(int id) {
 			return await _db.Artists.FindAsync(id);
 		}
@@ -54,19 +67,6 @@ namespace ArtGallery.Repositories {
 			var artist_entity = _db.Artists.Add(artist);
 			await _db.SaveChangesAsync();
 			return artist_entity.Entity;
-		}
-
-		public async Task<PaginatedResponse<PartialArtistDTO>> FindAllPartialPaginated(int page_index, int page_size) {
-			var artworks = await _db.Artists
-				.OrderBy(artist => artist.ArtistId)
-				.Skip((page_index - 1) * page_size)
-				.Take(page_size)
-				.Select(artist => new PartialArtistDTO() { Name = artist.Name, ArtistId = artist.ArtistId, Slug = artist.Slug, ImageURL = artist.ImageURL })
-				.ToListAsync();
-
-			var count = await _db.Artists.CountAsync();
-			int total_pages = (int)Math.Ceiling(count / (double)page_size);
-			return new PaginatedResponse<PartialArtistDTO>(artworks, page_index, total_pages);
 		}
 	}
 }

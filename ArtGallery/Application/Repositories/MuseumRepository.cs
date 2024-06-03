@@ -8,6 +8,8 @@ namespace ArtGallery.Repositories {
 	public class MuseumRepository(GalleryDbContext db) : IMuseumRepository {
 		private readonly GalleryDbContext _db = db;
 
+		// Check IBaseRepository for the documentation of the methods.
+
 		public async Task<Museum> SaveOne(Museum museum) {
 			if (museum == null) throw new Exception();
 			var museum_entity = await _db.AddAsync(museum);
