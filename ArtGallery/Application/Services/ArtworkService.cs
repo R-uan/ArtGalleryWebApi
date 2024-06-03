@@ -7,6 +7,10 @@ namespace ArtGallery.Services {
 	public class ArtworkService(IArtworkRepository repository) : IArtworkService {
 		private readonly IArtworkRepository _repository = repository;
 
+		public async Task<PaginatedResponse<PartialArtworkDTO>> PaginatedQuery(ArtworkQueryParams queryParams, int page) {
+			return await _repository.PaginatedQuery(queryParams, page);
+		}
+
 		public async Task<List<Artwork>> GetAll() {
 			return await _repository.FindAll();
 		}
@@ -48,5 +52,6 @@ namespace ArtGallery.Services {
 		public async Task<Artwork?> GetOneBySlug(string slug) {
 			return await _repository.FindBySlug(slug);
 		}
+
 	}
 }

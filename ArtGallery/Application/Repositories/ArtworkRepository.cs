@@ -1,13 +1,47 @@
 ﻿using ArtGallery.Models;
 using Microsoft.EntityFrameworkCore;
 using ArtGallery.Interfaces;
-using Microsoft.EntityFrameworkCore.Internal;
 using ArtGallery.Utils;
 using ArtGallery.DTO;
 
 namespace ArtGallery.Repositories {
 	public class ArtworkRepository(GalleryDbContext db) : IArtworkRepository {
 		private readonly GalleryDbContext _db = db;
+
+		// Check IBaseRepository for the documentation of the methods.
+
+		public async Task<PaginatedResponse<PartialArtworkDTO>> PaginatedQuery(ArtworkQueryParams queryParams, int page) {
+			var query = _db.Artworks.AsQueryable();
+
+			if (!string.IsNullOrEmpty(queryParams.Title)) {
+				query = query.Where(a => EF.Functions.ILike(a.Title, $"%{queryParams.Title}%"));
+			}
+
+			if (!string.IsNullOrEmpty(queryParams.Artist)) {
+				query = query.Where(a => EF.Functions.ILike(a.Artist!.Name, $"%{queryParams.Artist}%"));
+			}
+
+			if (!string.IsNullOrEmpty(queryParams.Period)) {
+				query = query.Where(a => EF.Functions.ILike(a.Period, $"%{queryParams.Period}%"));
+			}
+
+			if (queryParams.Year != null) {
+				query = query.Where(a => a.Year == queryParams.Year);
+			}
+
+			var result = from artwork in query
+									 join artist in _db.Artists
+									 on artwork.ArtistId equals artist.ArtistId
+									 select new PartialArtworkDTO {
+										 Title = artwork.Title,
+										 Artist = artist.Name,
+										 ArtworkId = artwork.ArtworkId,
+										 ImageURL = artwork.ImageURL,
+										 Slug = artwork.Slug,
+									 };
+
+			return await result.Paginate(page);
+		}
 
 		public async Task<bool?> DeleteById(int id) {
 			var artwork = await _db.Artworks.FindAsync(id);
@@ -23,17 +57,18 @@ namespace ArtGallery.Repositories {
 		}
 
 		public async Task<PaginatedResponse<PartialArtworkDTO>> FindAllPartialPaginated(int page_index, int page_size) {
-			var artworks = await _db.Artworks
-				.OrderBy(artworks => artworks.ArtworkId)
-				.Skip((page_index - 1) * page_size)
-				.Take(page_size)
-				.Join(_db.Artists,
-				artwork => artwork.ArtistId, artist => artist.ArtistId,
-				(artwork, artist) => new PartialArtworkDTO(artwork.ArtworkId, artwork.Title, artwork.Slug, artwork.ImageURL, artist.Name)).ToListAsync();
+			var artworks = from artwork in _db.Artworks
+										 join artist in _db.Artists
+										 on artwork.ArtistId equals artist.ArtistId
+										 select new PartialArtworkDTO {
+											 Title = artwork.Title,
+											 Artist = artist.Name,
+											 ArtworkId = artwork.ArtworkId,
+											 ImageURL = artwork.ImageURL,
+											 Slug = artwork.Slug,
+										 };
 
-			var count = await _db.Artworks.CountAsync();
-			int total_pages = (int)Math.Ceiling(count / (double)page_size);
-			return new PaginatedResponse<PartialArtworkDTO>(artworks, page_index, total_pages);
+			return await artworks.Paginate(page_index);
 		}
 
 		public async Task<List<PartialArtworkDTO>> FindAllPartial() {
