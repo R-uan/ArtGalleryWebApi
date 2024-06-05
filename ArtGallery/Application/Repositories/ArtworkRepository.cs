@@ -10,7 +10,7 @@ namespace ArtGallery.Repositories {
 
 		// Check IBaseRepository for the documentation of the methods.
 
-		public async Task<PaginatedResponse<PartialArtworkDTO>> PaginatedQuery(ArtworkQueryParams queryParams, int page) {
+		public async Task<PaginatedResponse<PartialArtworkDTO>> PaginatedQuery(ArtworkQueryParams queryParams, int pageIndex) {
 			var query = _db.Artworks.AsQueryable();
 
 			if (!string.IsNullOrEmpty(queryParams.Title)) {
@@ -40,7 +40,7 @@ namespace ArtGallery.Repositories {
 										 Slug = artwork.Slug,
 									 };
 
-			return await result.Paginate(page);
+			return await result.Paginate(pageIndex);
 		}
 
 		public async Task<bool?> DeleteById(int id) {
@@ -56,7 +56,7 @@ namespace ArtGallery.Repositories {
 			return await _db.Artworks.ToListAsync();
 		}
 
-		public async Task<PaginatedResponse<PartialArtworkDTO>> FindAllPartialPaginated(int page_index, int page_size) {
+		public async Task<PaginatedResponse<PartialArtworkDTO>> FindAllPartialPaginated(int pageIndex) {
 			var artworks = from artwork in _db.Artworks
 										 join artist in _db.Artists
 										 on artwork.ArtistId equals artist.ArtistId
@@ -68,7 +68,7 @@ namespace ArtGallery.Repositories {
 											 Slug = artwork.Slug,
 										 };
 
-			return await artworks.Paginate(page_index);
+			return await artworks.Paginate(pageIndex);
 		}
 
 		public async Task<List<PartialArtworkDTO>> FindAllPartial() {

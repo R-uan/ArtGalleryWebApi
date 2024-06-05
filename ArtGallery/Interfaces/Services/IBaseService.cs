@@ -11,7 +11,7 @@ namespace ArtGallery.Interfaces {
 
 		Task<bool?> DeleteOne(int id);
 		Task<TEntity?> UpdateOne(int id, UEntity artist);
-		Task<PaginatedResponse<PEntity>> GetAllPartialPaginated(int page_index, int page_size);
+		Task<PaginatedResponse<PEntity>> GetAllPartialPaginated(int pageIndex);
 
 	}
 }

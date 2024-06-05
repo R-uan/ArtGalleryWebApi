@@ -1,7 +1,7 @@
 ﻿using ArtGallery.Utils;
 
 namespace ArtGallery.Interfaces {
-	public interface IBaseRepository<TEntity, UEntity, PEntity> {
+	public interface IBaseRepository<TEntity, UEntity, PEntity, QEntity> {
 
 		/*
 		*	Takes an TEntity and attempts to save it on the database.
@@ -49,11 +49,13 @@ namespace ArtGallery.Interfaces {
 		*/
 		Task<List<PEntity>> FindAllPartial();
 
-
 		/*
 		* Returns a PaginatedResponse object with a list of PEntity 
 		* and information about the pagination. 
 		*/
-		Task<PaginatedResponse<PEntity>> FindAllPartialPaginated(int page_index, int page_size);
+		Task<PaginatedResponse<PEntity>> FindAllPartialPaginated(int pageIndex);
+
+		Task<PaginatedResponse<PEntity>> PaginatedQuery(QEntity queryParams, int pageIndex);
+
 	}
 }

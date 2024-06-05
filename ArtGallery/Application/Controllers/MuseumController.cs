@@ -53,9 +53,9 @@ namespace ArtGallery.Controllers {
 		}
 
 		[HttpGet("partial/paginate")]
-		public async Task<ActionResult<PaginatedResponse<PartialMuseumDTO>>> PaginatedPartial([FromQuery] int page_index = 1, int page_size = 20) {
+		public async Task<ActionResult<PaginatedResponse<PartialMuseumDTO>>> PaginatedPartial([FromQuery] int pageIndex = 1) {
 			try {
-				var response = await _service.GetAllPartialPaginated(page_index, page_size);
+				var response = await _service.GetAllPartialPaginated(pageIndex);
 				return Ok(response);
 			} catch (System.Exception e) {
 				return StatusCode(500, e.Message);

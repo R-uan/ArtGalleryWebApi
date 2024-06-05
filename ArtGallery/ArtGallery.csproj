@@ -11,6 +11,7 @@
     <Folder Include="Migrations\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Application\" />
+    <Folder Include="Utils\QueryParams\" />
   </ItemGroup>
 
 

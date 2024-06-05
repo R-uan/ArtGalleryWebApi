@@ -1,6 +1,6 @@
-using ArtGallery;
+namespace ArtGallery;
+
 using System.Text;
-using ArtGallery.Utils;
 using FluentValidation;
 using ArtGallery.Models;
 using ArtGallery.Services;
@@ -11,74 +11,89 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-namespace ArtGallery {
-    public class Program {
-        private static void Main(string[] args) {
-            var builder = WebApplication.CreateBuilder(args);
-            var Configuration = builder.Configuration;
+public class Program {
+	private static void Main(string[] args) {
+		var Builder = WebApplication.CreateBuilder(args);
+		var Configuration = Builder.Configuration;
+		var JwtSettings = Configuration.GetSection("Jwt").Get<JWTSettings>();
 
-            builder.Services.AddCors(options => options.AddPolicy(name: "AllowAll", policy => {
-                policy.AllowAnyOrigin();
-                policy.AllowAnyHeader();
-                policy.AllowAnyMethod();
-            }));
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddControllers();
-            builder.Services.AddSwaggerGen(c => { c.ResolveConflictingActions(x => x.First()); });
+		/*
+		*	Cross Origin Resource Sharing Policies
+		*/
+		Builder.Services.AddCors(options => options.AddPolicy(name: "AllowAll", policy => {
+			policy.AllowAnyOrigin();
+			policy.AllowAnyHeader();
+			policy.AllowAnyMethod();
+		}));
 
-            builder.Services.Configure<RouteOptions>(options => {
-                options.ConstraintMap.Add("string", typeof(string));
-            });
 
-            builder.Services.AddDbContext<GalleryDbContext>(options => {
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
-            });
+		Builder.Services.AddControllers();
+		Builder.Services.AddEndpointsApiExplorer();
+		Builder.Services.Configure<JWTSettings>(Configuration.GetSection("Jwt"));
+		Builder.Services.AddSwaggerGen(c => { c.ResolveConflictingActions(x => x.First()); });
 
-            builder.Services.AddAuthentication(cfg => {
-                cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                cfg.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+		Builder.Services.Configure<RouteOptions>(options => {
+			options.ConstraintMap.Add("string", typeof(string));
+		});
 
-            }).AddJwtBearer(x => {
-                x.SaveToken = false;
-                x.RequireHttpsMetadata = false;
-                x.TokenValidationParameters = new TokenValidationParameters {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super-segredo-mega-super-grande-haha")),
-                };
-            });
+		/*
+		* Database Cofiguration
+		*/
+		Builder.Services.AddDbContext<GalleryDbContext>(options => {
+			options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
+		});
 
-            /* Admin */
-            builder.Services.AddScoped<IValidator<Admin>, AdminValidator>();
-            builder.Services.AddScoped<IAdminRepository, AdminRepository>();
-            builder.Services.AddScoped<IAdminService, AdminService>();
-            /* Artist */
-            builder.Services.AddScoped<IValidator<Artist>, ArtistValidator>();
-            builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
-            builder.Services.AddScoped<IArtistService, ArtistService>();
+		/*
+		* JSON Web Token authentication middleware
+		*/
+		Builder.Services.AddAuthentication(cfg => {
+			cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+			cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+		}).AddJwtBearer(x => {
+			x.SaveToken = true;
+			x.RequireHttpsMetadata = false;
+			x.TokenValidationParameters = new TokenValidationParameters {
+				ValidateIssuer = false,
+				ValidateAudience = false,
+				ValidIssuer = JwtSettings!.Issuer,
+				IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtSettings!.SecretKey)),
+			};
+		});
+		Builder.Services.AddAuthorization();
 
-            /* Museum */
-            builder.Services.AddScoped<IValidator<Museum>, MuseumValidator>();
-            builder.Services.AddScoped<IMuseumRepository, MuseumRepository>();
-            builder.Services.AddScoped<IMuseumService, MuseumService>();
+		/* Admin */
+		Builder.Services.AddScoped<IValidator<Admin>, AdminValidator>();
+		Builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+		Builder.Services.AddScoped<IAdminService, AdminService>();
 
-            /* Artwork */
-            builder.Services.AddScoped<IValidator<Artwork>, ArtworkValidator>();
-            builder.Services.AddScoped<IArtworkRepository, ArtworkRepository>();
-            builder.Services.AddScoped<IArtworkService, ArtworkService>();
+		/* Artist */
+		Builder.Services.AddScoped<IValidator<Artist>, ArtistValidator>();
+		Builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
+		Builder.Services.AddScoped<IArtistService, ArtistService>();
 
-            var app = builder.Build();
-            app.UseAuthentication();
-            app.MapControllers();
-            app.UseCors("AllowAll");
-            if (app.Environment.IsDevelopment()) {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+		/* Museum */
+		Builder.Services.AddScoped<IValidator<Museum>, MuseumValidator>();
+		Builder.Services.AddScoped<IMuseumRepository, MuseumRepository>();
+		Builder.Services.AddScoped<IMuseumService, MuseumService>();
 
-            }
+		/* Artwork */
+		Builder.Services.AddScoped<IValidator<Artwork>, ArtworkValidator>();
+		Builder.Services.AddScoped<IArtworkRepository, ArtworkRepository>();
+		Builder.Services.AddScoped<IArtworkService, ArtworkService>();
 
-            app.Run();
-        }
-    }
+		var app = Builder.Build();
+
+		app.UseAuthentication();
+		app.UseAuthorization();
+		app.MapControllers();
+
+		app.UseCors("AllowAll");
+		if (app.Environment.IsDevelopment()) {
+			app.UseSwagger();
+			app.UseSwaggerUI();
+
+		}
+
+		app.Run();
+	}
 }

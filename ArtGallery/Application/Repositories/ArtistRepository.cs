@@ -16,19 +16,6 @@ namespace ArtGallery.Repositories {
 			return await _db.Artists.Select(artist => new PartialArtistDTO(artist.Name, artist.Slug, artist.ArtistId, artist.ImageURL)).ToListAsync();
 		}
 
-		public async Task<PaginatedResponse<PartialArtistDTO>> FindAllPartialPaginated(int page_index, int page_size) {
-			var artists = from artist in _db.Artists
-										select new PartialArtistDTO {
-											ArtistId = artist.ArtistId,
-											ImageURL = artist.ImageURL,
-											Name = artist.Name,
-											Slug = artist.Slug
-										};
-
-
-			return await artists.Paginate(page_index);
-		}
-
 		public async Task<Artist?> FindById(int id) {
 			return await _db.Artists.FindAsync(id);
 		}
@@ -69,7 +56,20 @@ namespace ArtGallery.Repositories {
 			return artist_entity.Entity;
 		}
 
-		public async Task<PaginatedResponse<PartialArtistDTO>> PaginatedQuery(ArtistQueryParams queryParams, int page) {
+		public async Task<PaginatedResponse<PartialArtistDTO>> FindAllPartialPaginated(int pageIndex) {
+			var artists = from artist in _db.Artists
+										select new PartialArtistDTO {
+											ArtistId = artist.ArtistId,
+											ImageURL = artist.ImageURL,
+											Name = artist.Name,
+											Slug = artist.Slug
+										};
+
+
+			return await artists.Paginate(pageIndex);
+		}
+
+		public async Task<PaginatedResponse<PartialArtistDTO>> PaginatedQuery(ArtistQueryParams queryParams, int pageIndex) {
 			var query = _db.Artists.AsQueryable();
 			if (!string.IsNullOrEmpty(queryParams.Name)) {
 				query = query.Where(a => EF.Functions.ILike(a.Name, $"%{queryParams.Name}%"));
@@ -91,7 +91,7 @@ namespace ArtGallery.Repositories {
 											ImageURL = artist.ImageURL,
 										};
 
-			return await artists.Paginate(page);
+			return await artists.Paginate(pageIndex);
 		}
 	}
 }

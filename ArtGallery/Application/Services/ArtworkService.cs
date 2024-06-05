@@ -19,8 +19,8 @@ namespace ArtGallery.Services {
 			return await _repository.FindAllPartial();
 		}
 
-		public async Task<PaginatedResponse<PartialArtworkDTO>> GetAllPartialPaginated(int page_index, int page_size) {
-			return await _repository.FindAllPartialPaginated(page_index, page_size);
+		public async Task<PaginatedResponse<PartialArtworkDTO>> GetAllPartialPaginated(int pageIndex) {
+			return await _repository.FindAllPartialPaginated(pageIndex);
 		}
 
 		public async Task<Artwork?> GetOneById(int id) {

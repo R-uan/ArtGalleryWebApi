@@ -61,7 +61,7 @@ namespace ArtGallery.Repositories {
 			return exists == null;
 		}
 
-		public async Task<PaginatedResponse<PartialMuseumDTO>> FindAllPartialPaginated(int page_index, int page_size) {
+		public async Task<PaginatedResponse<PartialMuseumDTO>> FindAllPartialPaginated(int page_index) {
 			var museums = from museum in _db.Museums
 										select new PartialMuseumDTO {
 											Country = museum.Country,
@@ -72,7 +72,7 @@ namespace ArtGallery.Repositories {
 			return await museums.Paginate(page_index);
 		}
 
-		public async Task<PaginatedResponse<PartialMuseumDTO>> PaginatedQuery(MuseumQueryParams queryParams, int page) {
+		public async Task<PaginatedResponse<PartialMuseumDTO>> PaginatedQuery(MuseumQueryParams queryParams, int pageIndex) {
 			var query = _db.Museums.AsQueryable();
 			if (!string.IsNullOrEmpty(queryParams.Name)) {
 				query = query.Where(m => EF.Functions.ILike(m.Name, $"%{queryParams.Name}%"));
@@ -95,7 +95,7 @@ namespace ArtGallery.Repositories {
 											Slug = museum.Slug
 										};
 
-			return await museums.Paginate(page);
+			return await museums.Paginate(pageIndex);
 		}
 	}
 }

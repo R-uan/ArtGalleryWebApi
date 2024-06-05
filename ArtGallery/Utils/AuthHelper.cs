@@ -4,23 +4,33 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace ArtGallery.Utils {
-    public class AuthHelper {
-        public static string GenerateJWTToken(Admin admin) {
-            var claims = new List<Claim> {
-            new Claim(ClaimTypes.Name, admin.Username.ToString()),
-            new Claim(ClaimTypes.NameIdentifier, admin.Username.ToString()),
-        };
-            var jwtToken = new JwtSecurityToken(
-                claims: claims,
-                notBefore: DateTime.UtcNow,
-                expires: DateTime.UtcNow.AddDays(30),
-                signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super-segredo-mega-super-grande-haha")),
-                    SecurityAlgorithms.HmacSha256Signature)
-                );
-            return new JwtSecurityTokenHandler().WriteToken(jwtToken);
-        }
+namespace ArtGallery.Utils;
 
-    }
+public class AuthHelper {
+	public static string Generate(Admin admin) {
+		try {
+			var key = Encoding.UTF8.GetBytes("super-segredo-mega-super-grande-haha");
+			var handler = new JwtSecurityTokenHandler();
+			var credentials = new SigningCredentials(
+				new SymmetricSecurityKey(key),
+				SecurityAlgorithms.HmacSha256Signature
+			);
+			var tokenDescriptor = new SecurityTokenDescriptor {
+				Subject = GenerateClaims(admin),
+				Expires = DateTime.UtcNow.AddHours(2),
+				SigningCredentials = credentials,
+			};
+			var token = handler.CreateToken(tokenDescriptor);
+			return handler.WriteToken(token);
+		} catch (System.Exception e) {
+			return e.Message;
+		}
+	}
+
+	private static ClaimsIdentity GenerateClaims(Admin user) {
+		var ci = new ClaimsIdentity();
+		ci.AddClaim(new Claim(ClaimTypes.Name, user.Username));
+		return ci;
+	}
+
 }
