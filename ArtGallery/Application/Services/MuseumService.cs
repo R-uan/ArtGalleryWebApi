@@ -48,5 +48,9 @@ namespace ArtGallery.Services {
 		public async Task<PaginatedResponse<PartialMuseumDTO>> GetAllPartialPaginated(int page_index, int page_size) {
 			return await _repository.FindAllPartialPaginated(page_index, page_size);
 		}
+
+		public async Task<PaginatedResponse<PartialMuseumDTO>> PaginatedQuery(MuseumQueryParams queryParams, int page) {
+			return await _repository.PaginatedQuery(queryParams, page);
+		}
 	}
 }

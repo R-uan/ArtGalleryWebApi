@@ -23,6 +23,13 @@ namespace ArtGallery.Controllers {
 				return StatusCode(500, e.Message);
 			}
 		}
+
+		[HttpGet("/artist/q")]
+		public async Task<ActionResult<List<PartialArtistDTO>>> QuerySearch([FromQuery] ArtistQueryParams queryParams, [FromQuery] int page = 1) {
+			var artists = await _service.PaginatedQuery(queryParams, page);
+			return Ok(artists);
+		}
+
 		[HttpGet("partial/paginate")]
 		public async Task<ActionResult<PaginatedResponse<PartialArtistDTO>>> PaginatedPartial([FromQuery] int page_index = 1, int page_size = 20) {
 			try {

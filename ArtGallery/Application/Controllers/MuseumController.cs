@@ -25,6 +25,12 @@ namespace ArtGallery.Controllers {
 			}
 		}
 
+		[HttpGet("/museum/q")]
+		public async Task<ActionResult<List<PartialMuseumDTO>>> QuerySearch([FromQuery] MuseumQueryParams queryParams, [FromQuery] int page = 1) {
+			var artists = await _service.PaginatedQuery(queryParams, page);
+			return Ok(artists);
+		}
+
 		[HttpPost]
 		public async Task<ActionResult<Museum>> Post(MuseumDTO museum) {
 			try {

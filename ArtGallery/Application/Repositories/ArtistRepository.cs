@@ -17,16 +17,16 @@ namespace ArtGallery.Repositories {
 		}
 
 		public async Task<PaginatedResponse<PartialArtistDTO>> FindAllPartialPaginated(int page_index, int page_size) {
-			var artworks = await _db.Artists
-				.OrderBy(artist => artist.ArtistId)
-				.Skip((page_index - 1) * page_size)
-				.Take(page_size)
-				.Select(artist => new PartialArtistDTO() { Name = artist.Name, ArtistId = artist.ArtistId, Slug = artist.Slug, ImageURL = artist.ImageURL })
-				.ToListAsync();
+			var artists = from artist in _db.Artists
+										select new PartialArtistDTO {
+											ArtistId = artist.ArtistId,
+											ImageURL = artist.ImageURL,
+											Name = artist.Name,
+											Slug = artist.Slug
+										};
 
-			var count = await _db.Artists.CountAsync();
-			int total_pages = (int)Math.Ceiling(count / (double)page_size);
-			return new PaginatedResponse<PartialArtistDTO>(artworks, page_index, total_pages);
+
+			return await artists.Paginate(page_index);
 		}
 
 		public async Task<Artist?> FindById(int id) {
@@ -67,6 +67,31 @@ namespace ArtGallery.Repositories {
 			var artist_entity = _db.Artists.Add(artist);
 			await _db.SaveChangesAsync();
 			return artist_entity.Entity;
+		}
+
+		public async Task<PaginatedResponse<PartialArtistDTO>> PaginatedQuery(ArtistQueryParams queryParams, int page) {
+			var query = _db.Artists.AsQueryable();
+			if (!string.IsNullOrEmpty(queryParams.Name)) {
+				query = query.Where(a => EF.Functions.ILike(a.Name, $"%{queryParams.Name}%"));
+			}
+
+			if (!string.IsNullOrEmpty(queryParams.Country)) {
+				query = query.Where(a => EF.Functions.ILike(a.Country, $"%{queryParams.Country}%"));
+			}
+
+			if (!string.IsNullOrEmpty(queryParams.Movement)) {
+				query = query.Where(a => a.Movement == queryParams.Movement);
+			}
+
+			var artists = from artist in query
+										select new PartialArtistDTO {
+											Name = artist.Name,
+											Slug = artist.Slug,
+											ArtistId = artist.ArtistId,
+											ImageURL = artist.ImageURL,
+										};
+
+			return await artists.Paginate(page);
 		}
 	}
 }

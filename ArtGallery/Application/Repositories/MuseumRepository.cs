@@ -62,20 +62,40 @@ namespace ArtGallery.Repositories {
 		}
 
 		public async Task<PaginatedResponse<PartialMuseumDTO>> FindAllPartialPaginated(int page_index, int page_size) {
-			var museums = await _db.Museums
-							.OrderBy(m => m.MuseumId)
-							.Skip((page_index - 1) * page_size)
-							.Take(page_size)
-							.Select(m => new PartialMuseumDTO() {
-								MuseumId = m.MuseumId,
-								Slug = m.Slug,
-								Name = m.Name,
-								Country = m.Country,
-							}).ToListAsync();
+			var museums = from museum in _db.Museums
+										select new PartialMuseumDTO {
+											Country = museum.Country,
+											MuseumId = museum.MuseumId,
+											Name = museum.Name,
+											Slug = museum.Slug,
+										};
+			return await museums.Paginate(page_index);
+		}
 
-			var count = await _db.Museums.CountAsync();
-			int total_pages = (int)Math.Ceiling(count / (double)page_size);
-			return new PaginatedResponse<PartialMuseumDTO>(museums, page_index, total_pages);
+		public async Task<PaginatedResponse<PartialMuseumDTO>> PaginatedQuery(MuseumQueryParams queryParams, int page) {
+			var query = _db.Museums.AsQueryable();
+			if (!string.IsNullOrEmpty(queryParams.Name)) {
+				query = query.Where(m => EF.Functions.ILike(m.Name, $"%{queryParams.Name}%"));
+			}
+			if (!string.IsNullOrEmpty(queryParams.City)) {
+				query = query.Where(m => EF.Functions.ILike(m.City!, $"%{queryParams.City}%"));
+			}
+			if (!string.IsNullOrEmpty(queryParams.Country)) {
+				query = query.Where(m => EF.Functions.ILike(m.Country, $"%{queryParams.Country}%"));
+			}
+			if (!string.IsNullOrEmpty(queryParams.State)) {
+				query = query.Where(m => EF.Functions.ILike(m.State!, $"%{queryParams.State}%"));
+			}
+
+			var museums = from museum in query
+										select new PartialMuseumDTO {
+											Country = museum.Country,
+											MuseumId = museum.MuseumId,
+											Name = museum.Name,
+											Slug = museum.Slug
+										};
+
+			return await museums.Paginate(page);
 		}
 	}
 }
