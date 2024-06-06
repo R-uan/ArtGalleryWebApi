@@ -10,6 +10,7 @@ using ArtGallery.Utils.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using ArtGallery.Utils;
 
 public class Program {
 	private static void Main(string[] args) {
@@ -28,6 +29,7 @@ public class Program {
 
 
 		Builder.Services.AddControllers();
+		Builder.Services.AddScoped<AuthHelper>();
 		Builder.Services.AddEndpointsApiExplorer();
 		Builder.Services.Configure<JWTSettings>(Configuration.GetSection("Jwt"));
 		Builder.Services.AddSwaggerGen(c => { c.ResolveConflictingActions(x => x.First()); });
@@ -53,7 +55,7 @@ public class Program {
 			x.SaveToken = true;
 			x.RequireHttpsMetadata = false;
 			x.TokenValidationParameters = new TokenValidationParameters {
-				ValidateIssuer = false,
+				ValidateIssuer = true,
 				ValidateAudience = false,
 				ValidIssuer = JwtSettings!.Issuer,
 				IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtSettings!.SecretKey)),

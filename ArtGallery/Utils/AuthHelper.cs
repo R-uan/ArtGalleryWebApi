@@ -1,4 +1,5 @@
 using ArtGallery.Models;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -6,19 +7,21 @@ using System.Text;
 
 namespace ArtGallery.Utils;
 
-public class AuthHelper {
-	public static string Generate(Admin admin) {
+public class AuthHelper(IOptions<JWTSettings> jwtSettings) {
+	private readonly JWTSettings _jwtSettings = jwtSettings.Value;
+	public string Generate(Admin admin) {
 		try {
-			var key = Encoding.UTF8.GetBytes("super-segredo-mega-super-grande-haha");
+			var key = Encoding.UTF8.GetBytes(_jwtSettings.SecretKey);
 			var handler = new JwtSecurityTokenHandler();
 			var credentials = new SigningCredentials(
 				new SymmetricSecurityKey(key),
 				SecurityAlgorithms.HmacSha256Signature
 			);
 			var tokenDescriptor = new SecurityTokenDescriptor {
+				Issuer = _jwtSettings.Issuer,
 				Subject = GenerateClaims(admin),
-				Expires = DateTime.UtcNow.AddHours(2),
 				SigningCredentials = credentials,
+				Expires = DateTime.UtcNow.AddHours(2),
 			};
 			var token = handler.CreateToken(tokenDescriptor);
 			return handler.WriteToken(token);
@@ -32,5 +35,4 @@ public class AuthHelper {
 		ci.AddClaim(new Claim(ClaimTypes.Name, user.Username));
 		return ci;
 	}
-
 }
