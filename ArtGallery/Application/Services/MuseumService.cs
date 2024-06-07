@@ -7,15 +7,15 @@ namespace ArtGallery.Services {
 	public class MuseumService(IMuseumRepository repository) : IMuseumService {
 		private readonly IMuseumRepository _repository = repository;
 
-		public async Task<List<Museum>> GetAll() {
+		public async Task<List<Museum>> All() {
 			return await _repository.FindAll();
 		}
 
-		public async Task<Museum?> GetOneById(int id) {
+		public async Task<Museum?> FindById(int id) {
 			return await _repository.FindById(id);
 		}
 
-		public async Task<Museum> PostOne(MuseumDTO museum) {
+		public async Task<Museum> Save(MuseumDTO museum) {
 			Museum mapping = new() {
 				Country = museum.Country,
 				Name = museum.Name,
@@ -29,23 +29,23 @@ namespace ArtGallery.Services {
 			return await _repository.SaveOne(mapping);
 		}
 
-		public async Task<Museum?> UpdateOne(int id, UpdateMuseumDTO museum) {
+		public async Task<Museum?> Update(int id, UpdateMuseumDTO museum) {
 			return await _repository.UpdateById(id, museum);
 		}
 
-		public async Task<bool?> DeleteOne(int id) {
+		public async Task<bool?> Delete(int id) {
 			return await _repository.DeleteById(id);
 		}
 
-		public async Task<Museum?> GetOneBySlug(string slug) {
+		public async Task<Museum?> FindBySlug(string slug) {
 			return await _repository.FindBySlug(slug);
 		}
 
-		public async Task<List<PartialMuseumDTO>> GetAllPartial() {
+		public async Task<List<PartialMuseumDTO>> Partial() {
 			return await _repository.FindAllPartial();
 		}
 
-		public async Task<PaginatedResponse<PartialMuseumDTO>> GetAllPartialPaginated(int pageIndex) {
+		public async Task<PaginatedResponse<PartialMuseumDTO>> PartialPaginated(int pageIndex) {
 			return await _repository.FindAllPartialPaginated(pageIndex);
 		}
 

@@ -11,23 +11,27 @@ namespace ArtGallery.Services {
 			return await _repository.PaginatedQuery(queryParams, page);
 		}
 
-		public async Task<List<Artwork>> GetAll() {
+		public async Task<List<Artwork>> All() {
 			return await _repository.FindAll();
 		}
 
-		public async Task<List<PartialArtworkDTO>> GetAllPartial() {
+		public async Task<List<PartialArtworkDTO>> Partial() {
 			return await _repository.FindAllPartial();
 		}
 
-		public async Task<PaginatedResponse<PartialArtworkDTO>> GetAllPartialPaginated(int pageIndex) {
+		public async Task<PaginatedResponse<PartialArtworkDTO>> PartialPaginated(int pageIndex) {
 			return await _repository.FindAllPartialPaginated(pageIndex);
 		}
 
-		public async Task<Artwork?> GetOneById(int id) {
+		public async Task<Artwork?> FindById(int id) {
 			return await _repository.FindById(id);
 		}
 
-		public async Task<Artwork> PostOne(ArtworkDTO artwork) {
+		public async Task<Artwork?> FindBySlug(string slug) {
+			return await _repository.FindBySlug(slug);
+		}
+
+		public async Task<Artwork> Save(ArtworkDTO artwork) {
 			Artwork mapping = new() {
 				Title = artwork.Title,
 				ArtistId = artwork.ArtistId,
@@ -41,17 +45,12 @@ namespace ArtGallery.Services {
 			return await _repository.SaveOne(mapping);
 		}
 
-		public async Task<Artwork?> UpdateOne(int id, UpdateArtworkDTO artist) {
+		public async Task<Artwork?> Update(int id, UpdateArtworkDTO artist) {
 			return await _repository.UpdateById(id, artist);
 		}
 
-		public async Task<bool?> DeleteOne(int id) {
+		public async Task<bool?> Delete(int id) {
 			return await _repository.DeleteById(id);
 		}
-
-		public async Task<Artwork?> GetOneBySlug(string slug) {
-			return await _repository.FindBySlug(slug);
-		}
-
 	}
 }

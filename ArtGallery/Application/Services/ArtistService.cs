@@ -5,22 +5,21 @@ using ArtGallery.Utils;
 
 namespace ArtGallery.Services {
 	public class ArtistService(IArtistRepository repository) : IArtistService {
-
 		private readonly IArtistRepository _repository = repository;
 
-		public async Task<List<Artist>> GetAll() {
+		public async Task<List<Artist>> All() {
 			return await _repository.FindAll();
 		}
 
-		public async Task<List<PartialArtistDTO>> GetAllPartial() {
+		public async Task<List<PartialArtistDTO>> Partial() {
 			return await _repository.FindAllPartial();
 		}
 
-		public async Task<Artist?> GetOneById(int id) {
+		public async Task<Artist?> FindById(int id) {
 			return await _repository.FindById(id);
 		}
 
-		public async Task<Artist> PostOne(ArtistDTO artist) {
+		public async Task<Artist> Save(ArtistDTO artist) {
 			Artist mapping = new() {
 				Name = artist.Name,
 				Slug = artist.Slug,
@@ -33,19 +32,19 @@ namespace ArtGallery.Services {
 			return await _repository.SaveOne(mapping);
 		}
 
-		public async Task<Artist?> UpdateOne(int id, UpdateArtistDTO artist) {
+		public async Task<Artist?> Update(int id, UpdateArtistDTO artist) {
 			return await _repository.UpdateById(id, artist);
 		}
 
-		public async Task<bool?> DeleteOne(int id) {
+		public async Task<bool?> Delete(int id) {
 			return await _repository.DeleteById(id);
 		}
 
-		public async Task<Artist?> GetOneBySlug(string slug) {
+		public async Task<Artist?> FindBySlug(string slug) {
 			return await _repository.FindBySlug(slug);
 		}
 
-		public async Task<PaginatedResponse<PartialArtistDTO>> GetAllPartialPaginated(int pageIndex) {
+		public async Task<PaginatedResponse<PartialArtistDTO>> PartialPaginated(int pageIndex) {
 			return await _repository.FindAllPartialPaginated(pageIndex);
 		}
 
