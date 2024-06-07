@@ -69,19 +69,20 @@ public class Program {
 		Builder.Services.AddScoped<IAdminService, AdminService>();
 
 		/* Artist */
-		Builder.Services.AddScoped<IValidator<Artist>, ArtistValidator>();
 		Builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
 		Builder.Services.AddScoped<IArtistService, ArtistService>();
 
 		/* Museum */
-		Builder.Services.AddScoped<IValidator<Museum>, MuseumValidator>();
 		Builder.Services.AddScoped<IMuseumRepository, MuseumRepository>();
 		Builder.Services.AddScoped<IMuseumService, MuseumService>();
 
 		/* Artwork */
-		Builder.Services.AddScoped<IValidator<Artwork>, ArtworkValidator>();
 		Builder.Services.AddScoped<IArtworkRepository, ArtworkRepository>();
 		Builder.Services.AddScoped<IArtworkService, ArtworkService>();
+
+		// Period
+		Builder.Services.AddScoped<IPeriodRepository, PeriodRepository>();
+		Builder.Services.AddScoped<IPeriodService, PeriodService>();
 
 		var app = Builder.Build();
 

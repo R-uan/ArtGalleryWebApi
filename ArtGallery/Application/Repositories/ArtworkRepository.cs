@@ -22,7 +22,7 @@ namespace ArtGallery.Repositories {
 			}
 
 			if (!string.IsNullOrEmpty(queryParams.Period)) {
-				query = query.Where(a => EF.Functions.ILike(a.Period, $"%{queryParams.Period}%"));
+				query = query.Where(a => EF.Functions.ILike(a.Period!.Name, $"%{queryParams.Period}%"));
 			}
 
 			if (queryParams.Year != null) {

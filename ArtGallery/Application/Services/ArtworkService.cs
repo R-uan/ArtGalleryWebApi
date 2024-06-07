@@ -34,7 +34,7 @@ namespace ArtGallery.Services {
 				History = artwork.History,
 				Slug = artwork.Slug,
 				ImageURL = artwork.ImageURL,
-				Period = artwork.Period,
+				PeriodId = artwork.PeriodId,
 				MuseumId = artwork.MuseumId,
 				Year = artwork.Year
 			};

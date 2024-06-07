@@ -11,12 +11,11 @@ namespace ArtGallery.DTO {
 		public required string History { get; set; }
 		[Required(ErrorMessage = "ImageURL Required", AllowEmptyStrings = false)]
 		public required string ImageURL { get; set; }
-		[Required(ErrorMessage = "Period Required", AllowEmptyStrings = false)]
-		public required string Period { get; set; }
 		[Required(ErrorMessage = "Artist Required", AllowEmptyStrings = false)]
 		public required int ArtistId { get; set; }
 		[Required(ErrorMessage = "Museum Required", AllowEmptyStrings = false)]
 		public required int MuseumId { get; set; }
-
+		[Required(ErrorMessage = "Period Required", AllowEmptyStrings = false)]
+		public required int PeriodId { get; set; }
 	}
 }
