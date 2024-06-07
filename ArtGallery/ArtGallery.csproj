@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
+    <Folder Include="Utils\" />
     <Folder Include="Migrations\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Application\" />

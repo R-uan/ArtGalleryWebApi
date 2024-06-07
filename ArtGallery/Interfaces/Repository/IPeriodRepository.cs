@@ -1,7 +1,6 @@
 ﻿namespace ArtGallery.Repositories;
 using ArtGallery.Models;
 
-
 public interface IPeriodRepository {
 	Task<bool?> DeletePeriod(int id);
 	Task<List<Period>> FindPeriods();

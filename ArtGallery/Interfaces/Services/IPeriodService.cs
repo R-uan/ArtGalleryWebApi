@@ -1,5 +1,4 @@
 ﻿using ArtGallery.Models;
-
 namespace ArtGallery.Services;
 
 public interface IPeriodService {

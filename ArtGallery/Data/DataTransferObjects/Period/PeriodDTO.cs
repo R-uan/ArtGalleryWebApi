@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
 namespace ArtGallery.Models;
 
 public class PeriodDTO {
