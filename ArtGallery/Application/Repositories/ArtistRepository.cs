@@ -8,11 +8,11 @@ namespace ArtGallery.Repositories {
 	public class ArtistRepository(GalleryDbContext db) : IArtistRepository {
 		private readonly GalleryDbContext _db = db;
 
-		public async Task<List<Artist>> FindAll() {
+		public async Task<List<Artist>> Find() {
 			return await _db.Artists.ToListAsync();
 		}
 
-		public async Task<List<PartialArtistDTO>> FindAllPartial() {
+		public async Task<List<PartialArtistDTO>> FindPartial() {
 			return await _db.Artists.Select(artist => new PartialArtistDTO(artist.Name, artist.Slug, artist.ArtistId, artist.ImageURL)).ToListAsync();
 		}
 
@@ -49,14 +49,14 @@ namespace ArtGallery.Repositories {
 			return exists == null;
 		}
 
-		public async Task<Artist> SaveOne(Artist artist) {
+		public async Task<Artist> Save(Artist artist) {
 			if (artist == null) throw new Exception();
 			var artist_entity = _db.Artists.Add(artist);
 			await _db.SaveChangesAsync();
 			return artist_entity.Entity;
 		}
 
-		public async Task<PaginatedResponse<PartialArtistDTO>> FindAllPartialPaginated(int pageIndex) {
+		public async Task<PaginatedResponse<PartialArtistDTO>> FindPartialPaginated(int pageIndex) {
 			var artists = from artist in _db.Artists
 										select new PartialArtistDTO {
 											ArtistId = artist.ArtistId,

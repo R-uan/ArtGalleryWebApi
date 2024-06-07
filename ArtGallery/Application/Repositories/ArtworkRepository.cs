@@ -52,11 +52,11 @@ namespace ArtGallery.Repositories {
 			return verify == null;
 		}
 
-		public async Task<List<Artwork>> FindAll() {
+		public async Task<List<Artwork>> Find() {
 			return await _db.Artworks.ToListAsync();
 		}
 
-		public async Task<PaginatedResponse<PartialArtworkDTO>> FindAllPartialPaginated(int pageIndex) {
+		public async Task<PaginatedResponse<PartialArtworkDTO>> FindPartialPaginated(int pageIndex) {
 			var artworks = from artwork in _db.Artworks
 										 join artist in _db.Artists
 										 on artwork.ArtistId equals artist.ArtistId
@@ -71,7 +71,7 @@ namespace ArtGallery.Repositories {
 			return await artworks.Paginate(pageIndex);
 		}
 
-		public async Task<List<PartialArtworkDTO>> FindAllPartial() {
+		public async Task<List<PartialArtworkDTO>> FindPartial() {
 			return await _db.Artworks.Join(_db.Artists,
 				artwork => artwork.ArtistId, artist => artist.ArtistId,
 				(artwork, artist) => new PartialArtworkDTO(artwork.ArtworkId, artwork.Title, artwork.Slug, artwork.ImageURL, artist.Name)).ToListAsync();
@@ -93,7 +93,7 @@ namespace ArtGallery.Repositories {
 			.FirstOrDefaultAsync();
 		}
 
-		public async Task<Artwork> SaveOne(Artwork entity) {
+		public async Task<Artwork> Save(Artwork entity) {
 			var artwork = await _db.Artworks.AddAsync(entity);
 			await _db.SaveChangesAsync();
 			return artwork.Entity;

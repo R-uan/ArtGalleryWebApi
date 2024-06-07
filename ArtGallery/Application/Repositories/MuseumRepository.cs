@@ -10,18 +10,18 @@ namespace ArtGallery.Repositories {
 
 		// Check IBaseRepository for the documentation of the methods.
 
-		public async Task<Museum> SaveOne(Museum museum) {
+		public async Task<Museum> Save(Museum museum) {
 			if (museum == null) throw new Exception();
 			var museum_entity = await _db.AddAsync(museum);
 			await _db.SaveChangesAsync();
 			return museum_entity.Entity;
 		}
 
-		public async Task<List<Museum>> FindAll() {
+		public async Task<List<Museum>> Find() {
 			return await _db.Museums.ToListAsync();
 		}
 
-		public async Task<List<PartialMuseumDTO>> FindAllPartial() {
+		public async Task<List<PartialMuseumDTO>> FindPartial() {
 			return await _db.Museums.Select(m => new PartialMuseumDTO(m.MuseumId, m.Name, m.Country, m.Slug)).ToListAsync();
 		}
 
@@ -61,7 +61,7 @@ namespace ArtGallery.Repositories {
 			return exists == null;
 		}
 
-		public async Task<PaginatedResponse<PartialMuseumDTO>> FindAllPartialPaginated(int page_index) {
+		public async Task<PaginatedResponse<PartialMuseumDTO>> FindPartialPaginated(int page_index) {
 			var museums = from museum in _db.Museums
 										select new PartialMuseumDTO {
 											Country = museum.Country,

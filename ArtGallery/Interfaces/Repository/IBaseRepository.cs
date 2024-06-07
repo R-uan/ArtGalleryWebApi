@@ -6,7 +6,7 @@ public interface IBaseRepository<TEntity, UEntity, PEntity, QEntity> {
 	//
 	//	Takes an TEntity and attempts to save it on the database.
 	//
-	Task<TEntity> SaveOne(TEntity entity);
+	Task<TEntity> Save(TEntity entity);
 	// 
 	// Takes an ID and tries to delete the record. 
 	// If deleted, returns true, else false. 
@@ -34,18 +34,18 @@ public interface IBaseRepository<TEntity, UEntity, PEntity, QEntity> {
 	// Entity contains all rows.
 	// Always returns a List, even if it's empty.
 	//
-	Task<List<TEntity>> FindAll();
+	Task<List<TEntity>> Find();
 	//
 	// Returns a list of all records available in the database.
 	// Entity contains only a partial amount of data.
 	// Always returns a List, even if it's empty.
 	//
-	Task<List<PEntity>> FindAllPartial();
+	Task<List<PEntity>> FindPartial();
 	//
 	// Returns a PaginatedResponse object with a list of PEntity 
 	// and information about the pagination. 
 	//
-	Task<PaginatedResponse<PEntity>> FindAllPartialPaginated(int pageIndex);
+	Task<PaginatedResponse<PEntity>> FindPartialPaginated(int pageIndex);
 
 	Task<PaginatedResponse<PEntity>> PaginatedQuery(QEntity queryParams, int pageIndex);
 
