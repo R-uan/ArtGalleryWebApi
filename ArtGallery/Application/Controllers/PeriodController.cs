@@ -10,12 +10,13 @@ namespace ArtGallery;
 public class PeriodController(IPeriodService service, IValidator<PeriodDTO> validator) : ControllerBase {
 	private readonly IPeriodService _service = service;
 	private readonly IValidator<PeriodDTO> _validator = validator;
+
 	//
 	//
 	//
 	//
 	[HttpGet]
-	public async Task<ActionResult<List<Period>>> All() {
+	public async Task<ActionResult<List<Period>>> Get() {
 		try {
 			var periods = await _service.GetPeriods();
 			return Ok(periods);
@@ -24,12 +25,13 @@ public class PeriodController(IPeriodService service, IValidator<PeriodDTO> vali
 			throw;
 		}
 	}
+
 	//
 	//
 	//
 	//
 	[HttpGet("/partial")]
-	public async Task<ActionResult<List<PartialPeriod>>> Partial() {
+	public async Task<ActionResult<List<PartialPeriod>>> GetPartial() {
 		try {
 			var periods = await _service.GetPartialPeriods();
 			return Ok(periods);
@@ -38,12 +40,13 @@ public class PeriodController(IPeriodService service, IValidator<PeriodDTO> vali
 			throw;
 		}
 	}
+
 	//
 	//
 	//
 	//
 	[HttpGet("{id:int}")]
-	public async Task<ActionResult<Period?>> One(int id) {
+	public async Task<ActionResult<Period?>> OneById(int id) {
 		try {
 			var period = await _service.GetOnePeriod(id);
 			return period != null ? Ok(period) : NotFound($"Period was not found.");
@@ -52,13 +55,14 @@ public class PeriodController(IPeriodService service, IValidator<PeriodDTO> vali
 			throw;
 		}
 	}
+
 	//
 	//
 	//
 	//
 	[HttpPost]
 	[Authorize]
-	public async Task<ActionResult<Period?>> Save([FromBody] PeriodDTO period) {
+	public async Task<ActionResult<Period?>> Post([FromBody] PeriodDTO period) {
 		try {
 			var validation = _validator.Validate(period);
 			if (validation.IsValid) {
@@ -70,6 +74,7 @@ public class PeriodController(IPeriodService service, IValidator<PeriodDTO> vali
 			throw;
 		}
 	}
+
 	//
 	//
 	//

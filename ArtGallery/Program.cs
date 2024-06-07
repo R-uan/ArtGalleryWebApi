@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using ArtGallery.Utils;
+using ArtGallery.DTO;
 
 public class Program {
 	private static void Main(string[] args) {
@@ -69,14 +70,17 @@ public class Program {
 		Builder.Services.AddScoped<IAdminService, AdminService>();
 		//
 		// Artist dependencies.
+		Builder.Services.AddScoped<IValidator<ArtistDTO>, ArtistValidator>();
 		Builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
 		Builder.Services.AddScoped<IArtistService, ArtistService>();
 		//
 		// Museum dependencies.
+		Builder.Services.AddScoped<IValidator<MuseumDTO>, MuseumValidator>();
 		Builder.Services.AddScoped<IMuseumRepository, MuseumRepository>();
 		Builder.Services.AddScoped<IMuseumService, MuseumService>();
 		//
 		// Artwork dependencies.
+		Builder.Services.AddScoped<IValidator<ArtworkDTO>, ArtworkValidator>();
 		Builder.Services.AddScoped<IArtworkRepository, ArtworkRepository>();
 		Builder.Services.AddScoped<IArtworkService, ArtworkService>();
 		//

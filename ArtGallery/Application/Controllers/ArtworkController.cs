@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using ArtGallery.Utils;
 using ArtGallery.DTO;
 using Microsoft.AspNetCore.Authorization;
+using FluentValidation;
 
 [ApiController]
 [Route("/artwork")]
-public class ArtworkController(IArtworkService service) : ControllerBase {
+public class ArtworkController(IArtworkService service, IValidator<ArtworkDTO> validator) : ControllerBase {
 	private readonly IArtworkService _service = service;
+	private readonly IValidator<ArtworkDTO> _validator = validator;
 
 	//
 	//	Summary:
@@ -18,7 +20,7 @@ public class ArtworkController(IArtworkService service) : ControllerBase {
 	//		200 Status Code with a paginated response that has a list of partial data.
 	//		500 Status Code with the error message.
 	[HttpGet]
-	public async Task<ActionResult<List<Artwork>>> All() {
+	public async Task<ActionResult<List<Artwork>>> Get() {
 		try {
 			var artwork = await _service.GetAll();
 			return Ok(artwork);
@@ -26,6 +28,7 @@ public class ArtworkController(IArtworkService service) : ControllerBase {
 			return StatusCode(500, e.Message);
 		}
 	}
+
 	//
 	//	Summary:
 	//		Lists all the all artworks that matches the query received.
@@ -33,10 +36,11 @@ public class ArtworkController(IArtworkService service) : ControllerBase {
 	//		200 Status Code with a paginated response that has a list of partial data.
 	//		500 Status Code with the error message.
 	[HttpGet("/artwork/q")]
-	public async Task<ActionResult<PaginatedResponse<PartialArtworkDTO>>> QuerySearch([FromQuery] ArtworkQueryParams queryParams, [FromQuery] int page = 1) {
+	public async Task<ActionResult<PaginatedResponse<PartialArtworkDTO>>> GetQuery([FromQuery] ArtworkQueryParams queryParams, [FromQuery] int page = 1) {
 		var artists = await _service.PaginatedQuery(queryParams, page);
 		return Ok(artists);
 	}
+
 	//
 	//	Summary:
 	//		Lists all the all artworks from the database in a partial format.
@@ -44,7 +48,7 @@ public class ArtworkController(IArtworkService service) : ControllerBase {
 	//		200 Status Code with a list of entity.
 	//		500 Status Code with the error message.
 	[HttpGet("partial")]
-	public async Task<ActionResult<List<PartialArtworkDTO>>> PartialArtworks() {
+	public async Task<ActionResult<List<PartialArtworkDTO>>> GetPartial() {
 		try {
 			var artwork = await _service.GetAllPartial();
 			return Ok(artwork);
@@ -52,6 +56,7 @@ public class ArtworkController(IArtworkService service) : ControllerBase {
 			return StatusCode(500, e.Message);
 		}
 	}
+
 	//
 	//	Summary:
 	//		Lists all the all artworks from the database in a partial and paginated format.
@@ -59,7 +64,7 @@ public class ArtworkController(IArtworkService service) : ControllerBase {
 	//		200 Status Code with a paginated response that has a list of partial entity.
 	//		500 Status Code with the error message.
 	[HttpGet("partial/paginate")]
-	public async Task<ActionResult<PaginatedResponse<PartialArtworkDTO>>> PaginatedPartial([FromQuery] int pageIndex = 1) {
+	public async Task<ActionResult<PaginatedResponse<PartialArtworkDTO>>> GetPartialPaginated([FromQuery] int pageIndex = 1) {
 		try {
 			var response = await _service.GetAllPartialPaginated(pageIndex);
 			return Ok(response);
@@ -67,6 +72,7 @@ public class ArtworkController(IArtworkService service) : ControllerBase {
 			return StatusCode(500, e.Message);
 		}
 	}
+
 	//
 	//	Summary:
 	//		Finds the record associated with the given SLUG.
@@ -75,7 +81,7 @@ public class ArtworkController(IArtworkService service) : ControllerBase {
 	// 		404 Status Code
 	// 		500 Status Code with the error message.
 	[HttpGet("{slug}")]
-	public async Task<ActionResult<Artwork>> OneBySlug(string slug) {
+	public async Task<ActionResult<Artwork>> GetBySlug(string slug) {
 		try {
 			var artwork = await _service.GetOneBySlug(slug);
 			return artwork != null ? Ok(artwork) : NotFound();
@@ -83,6 +89,7 @@ public class ArtworkController(IArtworkService service) : ControllerBase {
 			return StatusCode(500, e.Message);
 		}
 	}
+
 	//
 	//	Summary:
 	//		Finds the record associated with the given ID.
@@ -91,7 +98,7 @@ public class ArtworkController(IArtworkService service) : ControllerBase {
 	// 		404 Status Code
 	// 		500 Status Code with the error message.
 	[HttpGet("{id:int}")]
-	public async Task<ActionResult<Artwork>> OneById(int id) {
+	public async Task<ActionResult<Artwork>> GetById(int id) {
 		try {
 			var artwork = await _service.GetOneById(id);
 			return artwork != null ? Ok(artwork) : NotFound();
@@ -99,6 +106,7 @@ public class ArtworkController(IArtworkService service) : ControllerBase {
 			return StatusCode(500, e.Message);
 		}
 	}
+
 	//
 	//	Summary:
 	//		Creates a Artwork Record from the data received from the body.
@@ -110,13 +118,15 @@ public class ArtworkController(IArtworkService service) : ControllerBase {
 	[Authorize]
 	public async Task<ActionResult<Artwork>> Post([FromBody] ArtworkDTO artwork) {
 		try {
-			if (!ModelState.IsValid) return BadRequest(ModelState);
+			var validation = _validator.Validate(artwork);
+			if (!validation.IsValid) return BadRequest(ModelState);
 			var create_artist = await _service.PostOne(artwork);
 			return Ok(create_artist);
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
 		}
 	}
+
 	//
 	//	Summary:
 	//		Deletes the record related to the ID provided.
@@ -133,6 +143,7 @@ public class ArtworkController(IArtworkService service) : ControllerBase {
 			return StatusCode(500, e.Message);
 		}
 	}
+
 	//
 	//	Summary:
 	//		Update the record related to the ID with the data received from the body.

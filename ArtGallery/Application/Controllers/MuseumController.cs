@@ -1,19 +1,17 @@
-﻿using ArtGallery.Models;
-using ArtGallery.Services;
-using FluentValidation;
-using FluentValidation.Results;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using ArtGallery.Interfaces;
+﻿namespace ArtGallery.Controllers;
 using ArtGallery.DTO;
+using FluentValidation;
 using ArtGallery.Utils;
+using ArtGallery.Models;
+using ArtGallery.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
-namespace ArtGallery.Controllers;
 [ApiController]
 [Route("/museum")]
-public class MuseumController(IMuseumService service) : ControllerBase {
+public class MuseumController(IMuseumService service, IValidator<MuseumDTO> validator) : ControllerBase {
 	private readonly IMuseumService _service = service;
+	private readonly IValidator<MuseumDTO> _validator = validator;
 
 	//
 	//	Summary:
@@ -22,7 +20,7 @@ public class MuseumController(IMuseumService service) : ControllerBase {
 	//		200 Status Code with a paginated response that has a list of partial data.
 	//		500 Status Code with the error message.
 	[HttpGet]
-	public async Task<ActionResult<List<Museum>>> All() {
+	public async Task<ActionResult<List<Museum>>> Get() {
 		try {
 			var museum = await _service.GetAll();
 			return Ok(museum);
@@ -37,10 +35,11 @@ public class MuseumController(IMuseumService service) : ControllerBase {
 	//		200 Status Code with a paginated response that has a list of partial data.
 	//		500 Status Code with the error message.
 	[HttpGet("/museum/q")]
-	public async Task<ActionResult<List<PartialMuseumDTO>>> QuerySearch([FromQuery] MuseumQueryParams queryParams, [FromQuery] int page = 1) {
+	public async Task<ActionResult<List<PartialMuseumDTO>>> GetQuery([FromQuery] MuseumQueryParams queryParams, [FromQuery] int page = 1) {
 		var artists = await _service.PaginatedQuery(queryParams, page);
 		return Ok(artists);
 	}
+
 	//
 	//	Summary:
 	//		Lists all the all museums from the database in a partial format.
@@ -48,7 +47,7 @@ public class MuseumController(IMuseumService service) : ControllerBase {
 	//		200 Status Code with a list of entity.
 	//		500 Status Code with the error message.
 	[HttpGet("partial")]
-	public async Task<ActionResult<List<PartialMuseumDTO>>> PartialMuseums() {
+	public async Task<ActionResult<List<PartialMuseumDTO>>> GetPartial() {
 		try {
 			var museum = await _service.GetAllPartial();
 			return Ok(museum);
@@ -56,6 +55,7 @@ public class MuseumController(IMuseumService service) : ControllerBase {
 			return StatusCode(500, e.Message);
 		}
 	}
+
 	//
 	//	Summary:
 	//		Lists all the all museums from the database in a partial and paginated format.
@@ -63,7 +63,7 @@ public class MuseumController(IMuseumService service) : ControllerBase {
 	//		200 Status Code with a paginated response that has a list of partial entity.
 	//		500 Status Code with the error message.
 	[HttpGet("partial/paginate")]
-	public async Task<ActionResult<PaginatedResponse<PartialMuseumDTO>>> PaginatedPartial([FromQuery] int pageIndex = 1) {
+	public async Task<ActionResult<PaginatedResponse<PartialMuseumDTO>>> GetPartialPaginated([FromQuery] int pageIndex = 1) {
 		try {
 			var response = await _service.GetAllPartialPaginated(pageIndex);
 			return Ok(response);
@@ -71,6 +71,7 @@ public class MuseumController(IMuseumService service) : ControllerBase {
 			return StatusCode(500, e.Message);
 		}
 	}
+
 	//
 	//	Summary:
 	//		Finds the record associated with the given SLUG.
@@ -79,7 +80,7 @@ public class MuseumController(IMuseumService service) : ControllerBase {
 	// 		404 Status Code
 	// 		500 Status Code with the error message.
 	[HttpGet("{slug}")]
-	public async Task<ActionResult<Museum>> OneBySlug(string slug) {
+	public async Task<ActionResult<Museum>> GetBySlug(string slug) {
 		try {
 			var museum = await _service.GetOneBySlug(slug);
 			return museum != null ? Ok(museum) : NotFound();
@@ -87,6 +88,7 @@ public class MuseumController(IMuseumService service) : ControllerBase {
 			return StatusCode(500, e.Message);
 		}
 	}
+
 	//
 	//	Summary:
 	//		Finds the record associated with the given ID.
@@ -95,7 +97,7 @@ public class MuseumController(IMuseumService service) : ControllerBase {
 	// 		404 Status Code
 	// 		500 Status Code with the error message.
 	[HttpGet("{id:int}")]
-	public async Task<ActionResult<Museum>> OneById(int id) {
+	public async Task<ActionResult<Museum>> GetById(int id) {
 		try {
 			var museum = await _service.GetOneById(id);
 			return museum != null ? Ok(museum) : NotFound();
@@ -103,6 +105,7 @@ public class MuseumController(IMuseumService service) : ControllerBase {
 			return StatusCode(500, e.Message);
 		}
 	}
+
 	//
 	//	Summary:
 	//		Creates a Artwork Record from the data received from the body.
@@ -114,13 +117,15 @@ public class MuseumController(IMuseumService service) : ControllerBase {
 	[Authorize]
 	public async Task<ActionResult<Museum>> Post(MuseumDTO museum) {
 		try {
-			if (!ModelState.IsValid) return BadRequest(ModelState);
+			var validation = _validator.Validate(museum);
+			if (!validation.IsValid) return BadRequest(ModelState);
 			var create_museum = await _service.PostOne(museum);
 			return create_museum;
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
 		}
 	}
+
 	//
 	//	Summary:
 	//		Deletes the record related to the ID provided.
@@ -137,6 +142,7 @@ public class MuseumController(IMuseumService service) : ControllerBase {
 			return StatusCode(500, e.Message);
 		}
 	}
+
 	//
 	//	Summary:
 	//		Update the record related to the ID with the data received from the body.
