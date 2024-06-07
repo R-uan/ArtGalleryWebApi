@@ -62,25 +62,26 @@ public class Program {
 			};
 		});
 		Builder.Services.AddAuthorization();
-
-		/* Admin */
+		//
+		// Admin dependencies.
 		Builder.Services.AddScoped<IValidator<Admin>, AdminValidator>();
 		Builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 		Builder.Services.AddScoped<IAdminService, AdminService>();
-
-		/* Artist */
+		//
+		// Artist dependencies.
 		Builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
 		Builder.Services.AddScoped<IArtistService, ArtistService>();
-
-		/* Museum */
+		//
+		// Museum dependencies.
 		Builder.Services.AddScoped<IMuseumRepository, MuseumRepository>();
 		Builder.Services.AddScoped<IMuseumService, MuseumService>();
-
-		/* Artwork */
+		//
+		// Artwork dependencies.
 		Builder.Services.AddScoped<IArtworkRepository, ArtworkRepository>();
 		Builder.Services.AddScoped<IArtworkService, ArtworkService>();
-
-		// Period
+		//
+		// Period dependencies.
+		Builder.Services.AddScoped<IValidator<PeriodDTO>, PeriodValidator>();
 		Builder.Services.AddScoped<IPeriodRepository, PeriodRepository>();
 		Builder.Services.AddScoped<IPeriodService, PeriodService>();
 
