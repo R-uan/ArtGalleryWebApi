@@ -22,7 +22,7 @@ public class ArtworkController(IArtworkService service, IValidator<ArtworkDTO> v
 	[HttpGet]
 	public async Task<ActionResult<List<Artwork>>> Get() {
 		try {
-			var artwork = await _service.GetAll();
+			var artwork = await _service.All();
 			return Ok(artwork);
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -50,7 +50,7 @@ public class ArtworkController(IArtworkService service, IValidator<ArtworkDTO> v
 	[HttpGet("partial")]
 	public async Task<ActionResult<List<PartialArtworkDTO>>> GetPartial() {
 		try {
-			var artwork = await _service.GetAllPartial();
+			var artwork = await _service.Partial();
 			return Ok(artwork);
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -66,7 +66,7 @@ public class ArtworkController(IArtworkService service, IValidator<ArtworkDTO> v
 	[HttpGet("partial/paginate")]
 	public async Task<ActionResult<PaginatedResponse<PartialArtworkDTO>>> GetPartialPaginated([FromQuery] int pageIndex = 1) {
 		try {
-			var response = await _service.GetAllPartialPaginated(pageIndex);
+			var response = await _service.PartialPaginated(pageIndex);
 			return Ok(response);
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -83,7 +83,7 @@ public class ArtworkController(IArtworkService service, IValidator<ArtworkDTO> v
 	[HttpGet("{slug}")]
 	public async Task<ActionResult<Artwork>> GetBySlug(string slug) {
 		try {
-			var artwork = await _service.GetOneBySlug(slug);
+			var artwork = await _service.FindBySlug(slug);
 			return artwork != null ? Ok(artwork) : NotFound();
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -100,7 +100,7 @@ public class ArtworkController(IArtworkService service, IValidator<ArtworkDTO> v
 	[HttpGet("{id:int}")]
 	public async Task<ActionResult<Artwork>> GetById(int id) {
 		try {
-			var artwork = await _service.GetOneById(id);
+			var artwork = await _service.FindById(id);
 			return artwork != null ? Ok(artwork) : NotFound();
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -120,7 +120,7 @@ public class ArtworkController(IArtworkService service, IValidator<ArtworkDTO> v
 		try {
 			var validation = _validator.Validate(artwork);
 			if (!validation.IsValid) return BadRequest(ModelState);
-			var create_artist = await _service.PostOne(artwork);
+			var create_artist = await _service.Save(artwork);
 			return Ok(create_artist);
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -137,7 +137,7 @@ public class ArtworkController(IArtworkService service, IValidator<ArtworkDTO> v
 	[HttpDelete("{id:int}")]
 	public async Task<ActionResult<bool>> Delete(int id) {
 		try {
-			var delete = await _service.DeleteOne(id);
+			var delete = await _service.Delete(id);
 			return delete == null ? NotFound(false) : Ok(true);
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -154,7 +154,7 @@ public class ArtworkController(IArtworkService service, IValidator<ArtworkDTO> v
 	[HttpPatch("{id:int}")]
 	public async Task<ActionResult<Artwork>> Patch(int id, [FromBody] UpdateArtworkDTO artwork) {
 		try {
-			var update = await _service.UpdateOne(id, artwork);
+			var update = await _service.Update(id, artwork);
 			if (update == null) return NotFound();
 			return Ok(update);
 		} catch (System.Exception e) {

@@ -7,19 +7,19 @@ namespace ArtGallery;
 public class PeriodService(IPeriodRepository repository) : IPeriodService {
 	private readonly IPeriodRepository _repository = repository;
 	public async Task<bool?> Delete(int id) {
-		return await _repository.DeletePeriod(id);
+		return await _repository.Delete(id);
 	}
 
 	public async Task<Period?> FindById(int id) {
-		return await _repository.FindOnePeriod(id);
+		return await _repository.FindById(id);
 	}
 
 	public async Task<List<PartialPeriod>> Partial() {
-		return await _repository.FindPartialPeriods();
+		return await _repository.FindPartial();
 	}
 
 	public async Task<List<Period>> All() {
-		return await _repository.FindPeriods();
+		return await _repository.Find();
 	}
 
 	public async Task<Period?> Save(PeriodDTO period) {
@@ -29,6 +29,6 @@ public class PeriodService(IPeriodRepository repository) : IPeriodService {
 			Start = period.Start,
 			End = period.End,
 		};
-		return await _repository.SavePeriod(period_map);
+		return await _repository.Save(period_map);
 	}
 }

@@ -8,7 +8,7 @@ namespace ArtGallery.Services {
 		private readonly IMuseumRepository _repository = repository;
 
 		public async Task<List<Museum>> All() {
-			return await _repository.FindAll();
+			return await _repository.Find();
 		}
 
 		public async Task<Museum?> FindById(int id) {
@@ -26,7 +26,7 @@ namespace ArtGallery.Services {
 				Longitude = museum.Longitude,
 				Inauguration = museum.Inauguration,
 			};
-			return await _repository.SaveOne(mapping);
+			return await _repository.Save(mapping);
 		}
 
 		public async Task<Museum?> Update(int id, UpdateMuseumDTO museum) {
@@ -42,11 +42,11 @@ namespace ArtGallery.Services {
 		}
 
 		public async Task<List<PartialMuseumDTO>> Partial() {
-			return await _repository.FindAllPartial();
+			return await _repository.FindPartial();
 		}
 
 		public async Task<PaginatedResponse<PartialMuseumDTO>> PartialPaginated(int pageIndex) {
-			return await _repository.FindAllPartialPaginated(pageIndex);
+			return await _repository.FindPartialPaginated(pageIndex);
 		}
 
 		public async Task<PaginatedResponse<PartialMuseumDTO>> PaginatedQuery(MuseumQueryParams queryParams, int page) {

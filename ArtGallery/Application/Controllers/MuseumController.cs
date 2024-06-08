@@ -22,7 +22,7 @@ public class MuseumController(IMuseumService service, IValidator<MuseumDTO> vali
 	[HttpGet]
 	public async Task<ActionResult<List<Museum>>> Get() {
 		try {
-			var museum = await _service.GetAll();
+			var museum = await _service.All();
 			return Ok(museum);
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -49,7 +49,7 @@ public class MuseumController(IMuseumService service, IValidator<MuseumDTO> vali
 	[HttpGet("partial")]
 	public async Task<ActionResult<List<PartialMuseumDTO>>> GetPartial() {
 		try {
-			var museum = await _service.GetAllPartial();
+			var museum = await _service.Partial();
 			return Ok(museum);
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -65,7 +65,7 @@ public class MuseumController(IMuseumService service, IValidator<MuseumDTO> vali
 	[HttpGet("partial/paginate")]
 	public async Task<ActionResult<PaginatedResponse<PartialMuseumDTO>>> GetPartialPaginated([FromQuery] int pageIndex = 1) {
 		try {
-			var response = await _service.GetAllPartialPaginated(pageIndex);
+			var response = await _service.PartialPaginated(pageIndex);
 			return Ok(response);
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -82,7 +82,7 @@ public class MuseumController(IMuseumService service, IValidator<MuseumDTO> vali
 	[HttpGet("{slug}")]
 	public async Task<ActionResult<Museum>> GetBySlug(string slug) {
 		try {
-			var museum = await _service.GetOneBySlug(slug);
+			var museum = await _service.FindBySlug(slug);
 			return museum != null ? Ok(museum) : NotFound();
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -99,7 +99,7 @@ public class MuseumController(IMuseumService service, IValidator<MuseumDTO> vali
 	[HttpGet("{id:int}")]
 	public async Task<ActionResult<Museum>> GetById(int id) {
 		try {
-			var museum = await _service.GetOneById(id);
+			var museum = await _service.FindById(id);
 			return museum != null ? Ok(museum) : NotFound();
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -119,7 +119,7 @@ public class MuseumController(IMuseumService service, IValidator<MuseumDTO> vali
 		try {
 			var validation = _validator.Validate(museum);
 			if (!validation.IsValid) return BadRequest(ModelState);
-			var create_museum = await _service.PostOne(museum);
+			var create_museum = await _service.Save(museum);
 			return create_museum;
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -136,7 +136,7 @@ public class MuseumController(IMuseumService service, IValidator<MuseumDTO> vali
 	[HttpDelete("{id:int}")]
 	public async Task<ActionResult<bool>> Delete(int id) {
 		try {
-			var delete = await _service.DeleteOne(id);
+			var delete = await _service.Delete(id);
 			return delete == null ? NotFound(false) : Ok(true);
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -153,7 +153,7 @@ public class MuseumController(IMuseumService service, IValidator<MuseumDTO> vali
 	[HttpPatch("{id:int}")]
 	public async Task<ActionResult<Museum?>> Patch(int id, UpdateMuseumDTO museum) {
 		try {
-			var update = await _service.UpdateOne(id, museum);
+			var update = await _service.Update(id, museum);
 			if (update == null) return NotFound();
 			return Ok(update);
 		} catch (System.Exception e) {

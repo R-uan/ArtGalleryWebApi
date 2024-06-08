@@ -23,7 +23,7 @@ public class ArtistController(IArtistService service, IValidator<ArtistDTO> vali
 	[HttpGet]
 	public async Task<ActionResult<List<Artist>>> Get() {
 		try {
-			var artists = await _service.GetAll();
+			var artists = await _service.All();
 			return Ok(artists);
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -51,7 +51,7 @@ public class ArtistController(IArtistService service, IValidator<ArtistDTO> vali
 	[HttpGet("partial/paginate")]
 	public async Task<ActionResult<PaginatedResponse<PartialArtistDTO>>> GetPartialPaginated([FromQuery] int pageIndex = 1) {
 		try {
-			var response = await _service.GetAllPartialPaginated(pageIndex);
+			var response = await _service.PartialPaginated(pageIndex);
 			return Ok(response);
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -67,7 +67,7 @@ public class ArtistController(IArtistService service, IValidator<ArtistDTO> vali
 	[HttpGet("partial")]
 	public async Task<ActionResult<List<PartialArtistDTO>>> GetPartial() {
 		try {
-			var artists = await _service.GetAllPartial();
+			var artists = await _service.Partial();
 			return Ok(artists);
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -84,7 +84,7 @@ public class ArtistController(IArtistService service, IValidator<ArtistDTO> vali
 	[HttpGet("{slug}")]
 	public async Task<ActionResult<Artist>> GetBySlug(string slug) {
 		try {
-			var artist = await _service.GetOneBySlug(slug);
+			var artist = await _service.FindBySlug(slug);
 			return artist != null ? Ok(artist) : NotFound();
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -101,7 +101,7 @@ public class ArtistController(IArtistService service, IValidator<ArtistDTO> vali
 	[HttpGet("{id:int}")]
 	public async Task<ActionResult<Artist>> GetById(int id) {
 		try {
-			var artist = await _service.GetOneById(id);
+			var artist = await _service.FindById(id);
 			return artist != null ? Ok(artist) : NotFound();
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -121,7 +121,7 @@ public class ArtistController(IArtistService service, IValidator<ArtistDTO> vali
 		try {
 			var validation = _validator.Validate(artist);
 			if (!validation.IsValid) return BadRequest(ModelState);
-			var create_artist = await _service.PostOne(artist);
+			var create_artist = await _service.Save(artist);
 			return Ok(create_artist);
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -138,7 +138,7 @@ public class ArtistController(IArtistService service, IValidator<ArtistDTO> vali
 	[HttpDelete("{id:int}")]
 	public async Task<ActionResult<bool>> Delete(int id) {
 		try {
-			var delete = await _service.DeleteOne(id);
+			var delete = await _service.Delete(id);
 			return delete == null ? NotFound(false) : Ok(true);
 		} catch (System.Exception e) {
 			return StatusCode(500, e.Message);
@@ -155,7 +155,7 @@ public class ArtistController(IArtistService service, IValidator<ArtistDTO> vali
 	[HttpPatch("{id:int}")]
 	public async Task<ActionResult<Artist>> Patch(int id, [FromBody] UpdateArtistDTO artist) {
 		try {
-			var update = await _service.UpdateOne(id, artist);
+			var update = await _service.Update(id, artist);
 			if (update == null) return NotFound();
 			return Ok(update);
 		} catch (System.Exception e) {

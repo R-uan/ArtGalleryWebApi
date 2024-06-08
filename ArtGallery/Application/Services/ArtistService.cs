@@ -8,11 +8,11 @@ namespace ArtGallery.Services {
 		private readonly IArtistRepository _repository = repository;
 
 		public async Task<List<Artist>> All() {
-			return await _repository.FindAll();
+			return await _repository.Find();
 		}
 
 		public async Task<List<PartialArtistDTO>> Partial() {
-			return await _repository.FindAllPartial();
+			return await _repository.FindPartial();
 		}
 
 		public async Task<Artist?> FindById(int id) {
@@ -29,7 +29,7 @@ namespace ArtGallery.Services {
 				Profession = artist.Profession,
 				ImageURL = artist.ImageURL
 			};
-			return await _repository.SaveOne(mapping);
+			return await _repository.Save(mapping);
 		}
 
 		public async Task<Artist?> Update(int id, UpdateArtistDTO artist) {
@@ -45,7 +45,7 @@ namespace ArtGallery.Services {
 		}
 
 		public async Task<PaginatedResponse<PartialArtistDTO>> PartialPaginated(int pageIndex) {
-			return await _repository.FindAllPartialPaginated(pageIndex);
+			return await _repository.FindPartialPaginated(pageIndex);
 		}
 
 		public async Task<PaginatedResponse<PartialArtistDTO>> PaginatedQuery(ArtistQueryParams queryParams, int page) {
