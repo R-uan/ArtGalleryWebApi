@@ -8,10 +8,8 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
-    <Folder Include="Utils\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Interfaces\" />
-    <Folder Include="Application\" />
+    <Folder Include="Utils\CustomExceptions\" />
     <Folder Include="Utils\QueryParams\" />
   </ItemGroup>
 
@@ -26,6 +24,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+    <PackageReference Include="StackExchange.Redis" Version="2.7.33" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
   

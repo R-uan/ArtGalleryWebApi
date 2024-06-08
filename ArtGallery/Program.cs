@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using ArtGallery.Utils;
 using ArtGallery.DTO;
+using StackExchange.Redis;
 
 public class Program {
 	private static void Main(string[] args) {
@@ -34,7 +35,6 @@ public class Program {
 		Builder.Services.AddEndpointsApiExplorer();
 		Builder.Services.Configure<JWTSettings>(Configuration.GetSection("Jwt"));
 		Builder.Services.AddSwaggerGen(c => { c.ResolveConflictingActions(x => x.First()); });
-
 		Builder.Services.Configure<RouteOptions>(options => {
 			options.ConstraintMap.Add("string", typeof(string));
 		});
@@ -62,7 +62,13 @@ public class Program {
 				IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtSettings!.SecretKey)),
 			};
 		});
+
 		Builder.Services.AddAuthorization();
+
+		Builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
+		Builder.Services.AddScoped<IRedisRepository, RedisRepository>();
+
+		#region 
 		//
 		// Admin dependencies.
 		Builder.Services.AddScoped<IValidator<Admin>, AdminValidator>();
@@ -88,6 +94,7 @@ public class Program {
 		Builder.Services.AddScoped<IValidator<PeriodDTO>, PeriodValidator>();
 		Builder.Services.AddScoped<IPeriodRepository, PeriodRepository>();
 		Builder.Services.AddScoped<IPeriodService, PeriodService>();
+		#endregion
 
 		var app = Builder.Build();
 
