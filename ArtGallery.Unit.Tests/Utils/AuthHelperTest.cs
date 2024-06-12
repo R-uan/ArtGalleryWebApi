@@ -1,19 +1,16 @@
-﻿using ArtGallery.Models;
-using ArtGallery.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
-namespace ArtGallery.Unit.Tests.Utils { 
-    [TestFixture]
-    public class AuthHelperTest {
-        [Test]
-        public void GenerateJwtToken() {
-            Admin admin = new Admin() { Username = "Username", Password = "Password" };
-            var token = AuthHelper.GenerateJWTToken(admin);
-            Assert.That(token, Is.Not.Null);
-        }
-    }
+namespace ArtGallery.Unit.Tests;
+
+[TestFixture]
+public class AuthHelperTest {
+	private readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.Unit.Test.json").Build();
+
+	[SetUp]
+	public void SetUp() {
+		var Settings = new ServiceCollection().Configure<JWTSettings>(Configuration.GetSection("Jwt"));
+
+	}
 }

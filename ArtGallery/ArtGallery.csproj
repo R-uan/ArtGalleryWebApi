@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
     <Folder Include="Migrations\" />
     <Folder Include="Utils\CustomExceptions\" />
     <Folder Include="Utils\QueryParams\" />
