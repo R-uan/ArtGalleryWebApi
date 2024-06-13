@@ -13,19 +13,9 @@ namespace Unit.Tests.Application.Repositories
     [TestFixture]
     public class RedisRepositoryTests
     {
-        private IConnectionMultiplexer GetRedisDatabaseConnection()
+        private static ConnectionMultiplexer GetRedisDatabaseConnection()
         {
             return ConnectionMultiplexer.Connect("127.0.0.1");
-        }
-
-        [OneTimeTearDown]
-        public async Task OneTimeTearDown()
-        {
-            using(var connection = GetRedisDatabaseConnection())
-            {
-                var server = connection.GetServer(connection.GetEndPoints()[0]);
-                await server.FlushDatabaseAsync();
-            }
         }
 
         [Test]
