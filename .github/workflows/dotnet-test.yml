@@ -18,23 +18,23 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.100
-      
+
     - name: Run Docker Compose
-      working-directory: "./ArtGallery.Integration.Tests"
+      working-directory: "./__tests__"
       run: docker compose up -d
-      
+
     - name: Restore dependencies
       working-directory: "./ArtGallery"
       run: dotnet restore
-  
+
     - name: Build
       working-directory: "./ArtGallery"
       run: dotnet build --no-restore
 
-    - name: Restore Integration Tests
-      working-directory: "./ArtGallery.Integration.Tests"
+    - name: Restore Unit Tests
+      working-directory: "./__tests__/Unit.Tests"
       run: dotnet restore
 
-    - name: Run Integration Tests
-      working-directory: "./ArtGallery.Integration.Tests"
+    - name: Run Unit Tests
+      working-directory: "./__tests__/Unit.Tests"
       run: dotnet test
