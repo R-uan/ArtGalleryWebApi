@@ -14,7 +14,7 @@ public class ArtworkService(IArtworkRepository repository, IRedisRepository redi
 	}
 
 	public async Task<List<Artwork>> All() {
-		var cached_artworks = await _redis.Get<Artwork>("artwork-all");
+		var cached_artworks = await _redis.Get<List<Artwork>>("artwork-all");
 		if (cached_artworks == null) {
 			var artworks = await _repository.Find();
 			await _redis.Store("artwork-all", artworks);

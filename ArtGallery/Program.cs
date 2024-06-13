@@ -42,9 +42,9 @@ public class Program
 			options.ConstraintMap.Add("string", typeof(string));
 		});
 
-		/*
-		* Database Cofiguration
-		*/
+		//
+		// Database Cofiguration
+		//
 		Builder.Services.AddDbContext<GalleryDbContext>(options =>
 		{
 			options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
