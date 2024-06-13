@@ -1,13 +1,13 @@
 services:
     postgres:
+        container_name: artgallery-test
         volumes:
-            - ./data:/var/lib/artgallery_test/postgresql/data
+            - ./data:/var/lib/artgallery-test/postgresql/data
         image: postgres:latest
-        container_name: artgallery_test
         restart: unless-stopped
         ports:
             - "5435:5432"
         environment:
-            POSTGRES_DB: test_database
+            POSTGRES_DB: test
             POSTGRES_USER: test
             POSTGRES_PASSWORD: 1234

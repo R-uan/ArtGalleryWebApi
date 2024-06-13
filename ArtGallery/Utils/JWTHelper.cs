@@ -7,17 +7,21 @@ using System.Text;
 
 namespace ArtGallery.Utils;
 
-public class AuthHelper(IOptions<JWTSettings> jwtSettings) {
+public class JWTHelper(IOptions<JWTSettings> jwtSettings)
+{
 	private readonly JWTSettings _jwtSettings = jwtSettings.Value;
-	public string Generate(Admin admin) {
-		try {
+	public string Generate(Admin admin)
+	{
+		try
+		{
 			var key = Encoding.UTF8.GetBytes(_jwtSettings.SecretKey);
 			var handler = new JwtSecurityTokenHandler();
 			var credentials = new SigningCredentials(
 				new SymmetricSecurityKey(key),
 				SecurityAlgorithms.HmacSha256Signature
 			);
-			var tokenDescriptor = new SecurityTokenDescriptor {
+			var tokenDescriptor = new SecurityTokenDescriptor
+			{
 				Issuer = _jwtSettings.Issuer,
 				Subject = GenerateClaims(admin),
 				SigningCredentials = credentials,
@@ -25,12 +29,15 @@ public class AuthHelper(IOptions<JWTSettings> jwtSettings) {
 			};
 			var token = handler.CreateToken(tokenDescriptor);
 			return handler.WriteToken(token);
-		} catch (System.Exception e) {
+		}
+		catch (System.Exception e)
+		{
 			return e.Message;
 		}
 	}
 
-	private static ClaimsIdentity GenerateClaims(Admin user) {
+	private static ClaimsIdentity GenerateClaims(Admin user)
+	{
 		var ci = new ClaimsIdentity();
 		ci.AddClaim(new Claim(ClaimTypes.Name, user.Username));
 		return ci;

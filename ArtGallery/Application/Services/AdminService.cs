@@ -5,8 +5,8 @@ using ArtGallery.Utils;
 using Microsoft.Extensions.Options;
 
 namespace ArtGallery.Services {
-	public class AdminService(IAdminRepository repository, AuthHelper authHelper) : IAdminService {
-		private readonly AuthHelper _authHelper = authHelper;
+	public class AdminService(IAdminRepository repository, JWTHelper authHelper) : IAdminService {
+		private readonly JWTHelper _authHelper = authHelper;
 		private readonly IAdminRepository _repository = repository;
 
 		public async Task<string?> Authenticate(string username, string password) {

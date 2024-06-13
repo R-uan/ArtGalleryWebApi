@@ -1,12 +1,14 @@
 ﻿using ArtGallery.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ArtGallery;
+namespace ArtGallery.Data.Seeders;
 
-public class PeriodSeeder(ModelBuilder modelBuilder) {
+public class PeriodSeeder(ModelBuilder modelBuilder)
+{
 	private readonly ModelBuilder _modelBuilder = modelBuilder;
 
-	public void Seed() {
+	public void Seed()
+	{
 		var artPeriods = new List<Period>() {
 		new() { PeriodId = 1, Name = "Prehistoric Art", Summary = "Art from the prehistoric era, characterized by cave paintings, carvings, and megalithic structures.", Start = -40000, End = -3000 },
 		new() { PeriodId = 2, Name = "Ancient Egyptian Art", Summary = "Art from ancient Egypt, known for its monumental structures, hieroglyphics, and stylized depictions of figures.", Start = -3000, End = -332 },

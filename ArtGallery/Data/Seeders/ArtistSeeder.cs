@@ -1,14 +1,18 @@
 ﻿using ArtGallery.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ArtGallery;
+namespace ArtGallery.Data.Seeders;
 
-public class ArtistSeeder(ModelBuilder modelBuilder) {
+public class ArtistSeeder(ModelBuilder modelBuilder)
+{
 	private readonly ModelBuilder _modelBuilder = modelBuilder;
-	public void Seed() {
-		this._modelBuilder.Entity<Artist>(period => {
+	public void Seed()
+	{
+		this._modelBuilder.Entity<Artist>(period =>
+		{
 			period.HasData(
-				new Artist() {
+				new Artist()
+				{
 					ArtistId = 1,
 					Name = "Leonardo Da Vinci",
 					Country = "Italy",

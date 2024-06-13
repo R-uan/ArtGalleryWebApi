@@ -22,9 +22,8 @@ public class Program
 		var Configuration = Builder.Configuration;
 		var JwtSettings = Configuration.GetSection("Jwt").Get<JWTSettings>();
 
-		/*
-		*	Cross Origin Resource Sharing Policies
-		*/
+		//
+		// Cross Origin Resource Sharing Policies
 		Builder.Services.AddCors(options => options.AddPolicy(name: "AllowAll", policy =>
 		{
 			policy.AllowAnyOrigin();
@@ -34,7 +33,7 @@ public class Program
 
 
 		Builder.Services.AddControllers();
-		Builder.Services.AddScoped<AuthHelper>();
+		Builder.Services.AddScoped<JWTHelper>();
 		Builder.Services.AddEndpointsApiExplorer();
 		Builder.Services.Configure<JWTSettings>(Configuration.GetSection("Jwt"));
 		Builder.Services.AddSwaggerGen(c => { c.ResolveConflictingActions(x => x.First()); });
@@ -76,7 +75,6 @@ public class Program
 		Builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("127.0.0.1"));
 		Builder.Services.AddScoped<IRedisRepository, RedisRepository>();
 
-		#region 
 		//
 		// Admin dependencies.
 		Builder.Services.AddScoped<IValidator<Admin>, AdminValidator>();
@@ -102,7 +100,7 @@ public class Program
 		Builder.Services.AddScoped<IValidator<PeriodDTO>, PeriodValidator>();
 		Builder.Services.AddScoped<IPeriodRepository, PeriodRepository>();
 		Builder.Services.AddScoped<IPeriodService, PeriodService>();
-		#endregion
+
 
 		var app = Builder.Build();
 
