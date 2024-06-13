@@ -14,8 +14,10 @@ using ArtGallery.Utils;
 using ArtGallery.DTO;
 using StackExchange.Redis;
 
-public class Program {
-	private static void Main(string[] args) {
+public class Program
+{
+	private static void Main(string[] args)
+	{
 		var Builder = WebApplication.CreateBuilder(args);
 		var Configuration = Builder.Configuration;
 		var JwtSettings = Configuration.GetSection("Jwt").Get<JWTSettings>();
@@ -23,7 +25,8 @@ public class Program {
 		/*
 		*	Cross Origin Resource Sharing Policies
 		*/
-		Builder.Services.AddCors(options => options.AddPolicy(name: "AllowAll", policy => {
+		Builder.Services.AddCors(options => options.AddPolicy(name: "AllowAll", policy =>
+		{
 			policy.AllowAnyOrigin();
 			policy.AllowAnyHeader();
 			policy.AllowAnyMethod();
@@ -35,27 +38,32 @@ public class Program {
 		Builder.Services.AddEndpointsApiExplorer();
 		Builder.Services.Configure<JWTSettings>(Configuration.GetSection("Jwt"));
 		Builder.Services.AddSwaggerGen(c => { c.ResolveConflictingActions(x => x.First()); });
-		Builder.Services.Configure<RouteOptions>(options => {
+		Builder.Services.Configure<RouteOptions>(options =>
+		{
 			options.ConstraintMap.Add("string", typeof(string));
 		});
 
 		/*
 		* Database Cofiguration
 		*/
-		Builder.Services.AddDbContext<GalleryDbContext>(options => {
+		Builder.Services.AddDbContext<GalleryDbContext>(options =>
+		{
 			options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
 		});
 
 		/*
 		* JSON Web Token authentication middleware
 		*/
-		Builder.Services.AddAuthentication(cfg => {
+		Builder.Services.AddAuthentication(cfg =>
+		{
 			cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 			cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-		}).AddJwtBearer(x => {
+		}).AddJwtBearer(x =>
+		{
 			x.SaveToken = true;
 			x.RequireHttpsMetadata = false;
-			x.TokenValidationParameters = new TokenValidationParameters {
+			x.TokenValidationParameters = new TokenValidationParameters
+			{
 				ValidateIssuer = true,
 				ValidateAudience = false,
 				ValidIssuer = JwtSettings!.Issuer,
@@ -65,7 +73,7 @@ public class Program {
 
 		Builder.Services.AddAuthorization();
 
-		Builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("localhost"));
+		Builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect("127.0.0.1"));
 		Builder.Services.AddScoped<IRedisRepository, RedisRepository>();
 
 		#region 
@@ -103,7 +111,8 @@ public class Program {
 		app.MapControllers();
 
 		app.UseCors("AllowAll");
-		if (app.Environment.IsDevelopment()) {
+		if (app.Environment.IsDevelopment())
+		{
 			app.UseSwagger();
 			app.UseSwaggerUI();
 

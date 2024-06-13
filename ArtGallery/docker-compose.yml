@@ -3,7 +3,7 @@ services:
         volumes:
             - ./data:/var/lib/artgallery/postgresql/data
         image: postgres:latest
-        container_name: my_postgres_db
+        container_name: postgres
         restart: unless-stopped
         ports:
             - "5432:5432"
@@ -13,6 +13,7 @@ services:
             POSTGRES_PASSWORD: my_password
 
     redis:
+        container_name: redis
         image: redis:latest
         ports:
             - "6379:6379"
