@@ -13,10 +13,10 @@ public class RedisRepository(IConnectionMultiplexer muxer) : IRedisRepository {
 		return store;
 	}
 
-	public async Task<List<T>?> Get<T>(string key) {
+	public async Task<T?> Get<T>(string key) {
 		string? cache = await _redis.StringGetAsync(key);
-		if (string.IsNullOrEmpty(cache)) return null;
-		var data = JsonSerializer.Deserialize<List<T>>(cache);
+		if (cache == null) return default;
+		var data = JsonSerializer.Deserialize<T>(cache);
 		return data;
 	}
 }
