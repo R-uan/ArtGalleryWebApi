@@ -62,10 +62,16 @@ namespace Unit.Tests.Repositories
             var options = GetDatabaseOptions();
             using (var context = new GalleryDbContext(options))
             {
+                //
+                //  Add entity to the database.
                 await context.AddAsync<Museum>(test_entity);
                 await context.SaveChangesAsync();
+                //
+                //  Find entity.
                 MuseumRepository repository = new(context);
                 var find = await repository.FindById(this.test_entity.MuseumId);
+                //
+                //  Assertions
                 Assert.That(find, Is.Not.Null);
                 Assert.That(find, Is.TypeOf<Museum>());
             }
