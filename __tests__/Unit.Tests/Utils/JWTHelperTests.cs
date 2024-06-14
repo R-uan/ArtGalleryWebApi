@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using ArtGallery.Models;
 
-namespace Unit.Tests
+namespace Unit.Tests.Utils
 {
 	public class JWTHelperTests
 	{

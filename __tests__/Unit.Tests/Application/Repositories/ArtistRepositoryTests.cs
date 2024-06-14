@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Unit.Tests.Application.Repositories
+namespace Unit.Tests.Repositories
 {
     [TestFixture]
     public class ArtistRepositoryTests

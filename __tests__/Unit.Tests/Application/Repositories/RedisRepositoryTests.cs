@@ -6,9 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
-namespace Unit.Tests.Application.Repositories
+namespace Unit.Tests.Repositories
 {
     [TestFixture]
     public class RedisRepositoryTests
@@ -19,12 +21,12 @@ namespace Unit.Tests.Application.Repositories
         }
 
         [Test]
-        public void GetRedisDatabase()
+        public void RedisConnectionTest()
         {
             var connect = GetRedisDatabaseConnection();
             Assert.That(connect.IsConnected, Is.True);
         }
-        
+
         [Test]
         public async Task StoreKeyTest()
         {
@@ -48,14 +50,24 @@ namespace Unit.Tests.Application.Repositories
         {
             using (var connection = GetRedisDatabaseConnection())
             {
+                //
+                //  Set key for retrieve
+                await connection.GetDatabase().StringSetAsync("test-string", JsonSerializer.Serialize("string-test"));
+                //
+                //  Get key
                 RedisRepository repository = new(connection);
                 var get = await repository.Get<string>("test-string");
                 Assert.That(get, Is.Not.Null);
                 Assert.That(get, Is.TypeOf<string>());
-;           }
+            }
 
-            using(var connection = GetRedisDatabaseConnection())
+            using (var connection = GetRedisDatabaseConnection())
             {
+                //
+                //  Set key for retrieve
+                await connection.GetDatabase().StringSetAsync("test-list", JsonSerializer.Serialize(new List<string>() { "Hello", "World!" }));
+                //
+                //  Get key
                 RedisRepository repository = new(connection);
                 var get = await repository.Get<List<string>>("test-list");
                 Assert.That(get, Is.Not.Null);
