@@ -1,7 +1,6 @@
 using ArtGallery;
 using ArtGallery.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace Unit.Tests.Repositories
 {
