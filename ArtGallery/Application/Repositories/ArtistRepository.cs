@@ -72,7 +72,8 @@ namespace ArtGallery.Repositories {
 		public async Task<PaginatedResponse<PartialArtistDTO>> PaginatedQuery(ArtistQueryParams queryParams, int pageIndex) {
 			var query = _db.Artists.AsQueryable();
 			if (!string.IsNullOrEmpty(queryParams.Name)) {
-				query = query.Where(a => EF.Functions.ILike(a.Name, $"%{queryParams.Name}%"));
+				// query = query.Where(a => EF.Functions.ILike(a.Name, $"%{queryParams.Name}%"));
+				query = query.Where(a => EF.Functions.Like(a.Name.ToLower(), $"%{queryParams.Name.ToLower()}%"));
 			}
 
 			if (!string.IsNullOrEmpty(queryParams.Country)) {
