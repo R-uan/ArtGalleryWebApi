@@ -9,7 +9,8 @@ public class RedisRepository(IConnectionMultiplexer muxer) : IRedisRepository {
 
 	public async Task<bool> Store<T>(string key, T values) {
 		string serialize = JsonSerializer.Serialize(values);
-		var store = await _redis.StringSetAsync(key, serialize);
+        TimeSpan expiration = TimeSpan.FromMinutes(30);
+        var store = await _redis.StringSetAsync(key, serialize, expiration);
 		return store;
 	}
 
