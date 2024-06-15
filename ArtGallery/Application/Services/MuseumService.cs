@@ -9,7 +9,9 @@ namespace ArtGallery.Services
 	{
 		private readonly IMuseumRepository _repository = repository;
 		private readonly IRedisRepository _redis = redis;
-
+		//
+		//
+		//
 		public async Task<List<Museum>> All()
 		{
 			//	Check for cache and return it if available;
@@ -21,7 +23,9 @@ namespace ArtGallery.Services
 			await _redis.Store<List<Museum>>("all-museum", find);
 			return find;
 		}
-
+		//
+		//
+		//
 		public async Task<List<PartialMuseumDTO>> Partial()
 		{
 			//	Check for cache and return it if available;
@@ -33,7 +37,9 @@ namespace ArtGallery.Services
 			await _redis.Store<List<PartialMuseumDTO>>("partial-museum", find);
 			return find;
 		}
-
+		//
+		//
+		//
 		public async Task<PaginatedResponse<PartialMuseumDTO>> PartialPaginated(int pageIndex)
 		{
 			//	Check for cache and return it if available;
@@ -45,7 +51,9 @@ namespace ArtGallery.Services
 			await _redis.Store<PaginatedResponse<PartialMuseumDTO>>($"partial-museum-{pageIndex}", find);
 			return find;
 		}
-
+		//
+		//
+		//
 		public async Task<PaginatedResponse<PartialMuseumDTO>> PaginatedQuery(MuseumQueryParams queryParams, int pageIndex)
 		{
 			//	Check for cache and return it if available;
@@ -57,9 +65,21 @@ namespace ArtGallery.Services
 			await _redis.Store<PaginatedResponse<PartialMuseumDTO>>($"query-museum-{pageIndex}", find);
 			return find;
 		}
-
+		//
+		//
+		//
 		public async Task<Museum?> FindById(int id) => await _repository.FindById(id);
-
+		//
+		//
+		//
+		public async Task<Museum?> FindBySlug(string slug) => await _repository.FindBySlug(slug);
+		//
+		//
+		//
+		public async Task<bool?> Delete(int id) => await _repository.DeleteById(id);
+		//
+		//
+		//
 		public async Task<Museum> Save(MuseumDTO museum) => await _repository.Save(new Museum()
 		{
 			Country = museum.Country,
@@ -71,11 +91,9 @@ namespace ArtGallery.Services
 			Longitude = museum.Longitude,
 			Inauguration = museum.Inauguration,
 		});
-
-		public async Task<bool?> Delete(int id) => await _repository.DeleteById(id);
-
-		public async Task<Museum?> FindBySlug(string slug) => await _repository.FindBySlug(slug);
-
+		//
+		//
+		//
 		public async Task<Museum?> Update(int id, UpdateMuseumDTO museum) => await _repository.UpdateById(id, museum);
 	}
 }

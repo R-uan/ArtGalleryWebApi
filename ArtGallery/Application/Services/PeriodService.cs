@@ -8,7 +8,9 @@ public class PeriodService(IPeriodRepository repository, IRedisRepository redis)
 {
 	private readonly IPeriodRepository _repository = repository;
 	private readonly IRedisRepository _redis = redis;
-
+	//
+	//
+	//
 	public async Task<List<PartialPeriod>> Partial()
 	{
 		//	Check cache for existing data.
@@ -20,7 +22,9 @@ public class PeriodService(IPeriodRepository repository, IRedisRepository redis)
 		await _redis.Store<List<PartialPeriod>>("partial-periods", find);
 		return find;
 	}
-
+	//
+	//
+	//
 	public async Task<List<Period>> All()
 	{
 		//	Check for cache and return it if available;
@@ -32,11 +36,17 @@ public class PeriodService(IPeriodRepository repository, IRedisRepository redis)
 		await _redis.Store<List<Period>>("all-periods", find);
 		return find;
 	}
-
+	//
+	//
+	//
 	public async Task<bool?> Delete(int id) => await _repository.Delete(id);
-
+	//
+	//
+	//
 	public async Task<Period?> FindById(int id) => await _repository.FindById(id);
-
+	//
+	//
+	//
 	public async Task<Period?> Save(PeriodDTO period) => await _repository.Save(new Period()
 	{
 		Name = period.Name,
