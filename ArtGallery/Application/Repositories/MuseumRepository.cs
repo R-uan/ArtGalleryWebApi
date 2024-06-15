@@ -4,39 +4,48 @@ using ArtGallery.Interfaces;
 using ArtGallery.DTO;
 using ArtGallery.Utils;
 
-namespace ArtGallery.Repositories {
-	public class MuseumRepository(GalleryDbContext db) : IMuseumRepository {
+namespace ArtGallery.Repositories
+{
+	public class MuseumRepository(GalleryDbContext db) : IMuseumRepository
+	{
 		private readonly GalleryDbContext _db = db;
 
 		// Check IBaseRepository for the documentation of the methods.
 
-		public async Task<Museum> Save(Museum museum) {
+		public async Task<Museum> Save(Museum museum)
+		{
 			if (museum == null) throw new Exception();
 			var museum_entity = await _db.AddAsync(museum);
 			await _db.SaveChangesAsync();
 			return museum_entity.Entity;
 		}
 
-		public async Task<List<Museum>> Find() {
+		public async Task<List<Museum>> Find()
+		{
 			return await _db.Museums.ToListAsync();
 		}
 
-		public async Task<List<PartialMuseumDTO>> FindPartial() {
+		public async Task<List<PartialMuseumDTO>> FindPartial()
+		{
 			return await _db.Museums.Select(m => new PartialMuseumDTO(m.MuseumId, m.Name, m.Country, m.Slug)).ToListAsync();
 		}
 
-		public async Task<Museum?> FindById(int id) {
+		public async Task<Museum?> FindById(int id)
+		{
 			return await _db.Museums.FindAsync(id);
 		}
 
-		public async Task<Museum?> FindBySlug(string slug) {
+		public async Task<Museum?> FindBySlug(string slug)
+		{
 			return await _db.Museums.Where(museum => museum.Slug == slug).FirstOrDefaultAsync();
 		}
 
-		public async Task<Museum?> UpdateById(int id, UpdateMuseumDTO patch) {
+		public async Task<Museum?> UpdateById(int id, UpdateMuseumDTO patch)
+		{
 			var museum = await _db.Museums.FindAsync(id);
 			if (museum == null) return null;
-			if (patch != null) {
+			if (patch != null)
+			{
 				if (!string.IsNullOrEmpty(patch.Name)) museum.Name = patch.Name;
 				if (!string.IsNullOrEmpty(patch.City)) museum.City = patch.City;
 				if (!string.IsNullOrEmpty(patch.State)) museum.State = patch.State;
@@ -52,7 +61,8 @@ namespace ArtGallery.Repositories {
 			throw new Exception();
 		}
 
-		public async Task<bool?> DeleteById(int id) {
+		public async Task<bool?> DeleteById(int id)
+		{
 			var museum = await _db.Museums.FindAsync(id);
 			if (museum == null) return null;
 			_db.Museums.Remove(museum);
@@ -61,9 +71,11 @@ namespace ArtGallery.Repositories {
 			return exists == null;
 		}
 
-		public async Task<PaginatedResponse<PartialMuseumDTO>> FindPartialPaginated(int page_index) {
+		public async Task<PaginatedResponse<PartialMuseumDTO>> FindPartialPaginated(int page_index)
+		{
 			var museums = from museum in _db.Museums
-										select new PartialMuseumDTO {
+										select new PartialMuseumDTO
+										{
 											Country = museum.Country,
 											MuseumId = museum.MuseumId,
 											Name = museum.Name,
@@ -72,23 +84,21 @@ namespace ArtGallery.Repositories {
 			return await museums.Paginate(page_index);
 		}
 
-		public async Task<PaginatedResponse<PartialMuseumDTO>> PaginatedQuery(MuseumQueryParams queryParams, int pageIndex) {
+		public async Task<PaginatedResponse<PartialMuseumDTO>> PaginatedQuery(MuseumQueryParams queryParams, int pageIndex)
+		{
 			var query = _db.Museums.AsQueryable();
-			if (!string.IsNullOrEmpty(queryParams.Name)) {
-				query = query.Where(m => EF.Functions.ILike(m.Name, $"%{queryParams.Name}%"));
-			}
-			if (!string.IsNullOrEmpty(queryParams.City)) {
-				query = query.Where(m => EF.Functions.ILike(m.City!, $"%{queryParams.City}%"));
-			}
-			if (!string.IsNullOrEmpty(queryParams.Country)) {
-				query = query.Where(m => EF.Functions.ILike(m.Country, $"%{queryParams.Country}%"));
-			}
-			if (!string.IsNullOrEmpty(queryParams.State)) {
-				query = query.Where(m => EF.Functions.ILike(m.State!, $"%{queryParams.State}%"));
-			}
+			if (!string.IsNullOrEmpty(queryParams.Name))
+				query = query.Where(m => EF.Functions.Like(m.Name.ToLower(), $"%{queryParams.Name.ToLower()}%"));
+			if (!string.IsNullOrEmpty(queryParams.City))
+				query = query.Where(m => EF.Functions.Like(m.City!.ToLower(), $"%{queryParams.City.ToLower()}%"));
+			if (!string.IsNullOrEmpty(queryParams.Country))
+				query = query.Where(m => EF.Functions.Like(m.Country.ToLower(), $"%{queryParams.Country.ToLower()}%"));
+			if (!string.IsNullOrEmpty(queryParams.State))
+				query = query.Where(m => EF.Functions.Like(m.State!.ToLower(), $"%{queryParams.State.ToLower()}%"));
 
 			var museums = from museum in query
-										select new PartialMuseumDTO {
+										select new PartialMuseumDTO
+										{
 											Country = museum.Country,
 											MuseumId = museum.MuseumId,
 											Name = museum.Name,
