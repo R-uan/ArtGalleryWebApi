@@ -2,6 +2,8 @@
 using ArtGallery.Interfaces;
 using ArtGallery.DTO;
 using ArtGallery.Utils;
+using ArtGallery.Utils.Caching;
+using System.Reflection;
 
 namespace ArtGallery.Services
 {
@@ -14,56 +16,39 @@ namespace ArtGallery.Services
 		//
 		public async Task<List<Museum>> All()
 		{
-			//	Check for cache and return it if available;
-			var cache = await _redis.Get<List<Museum>>("all-museum");
-			if (cache != null) return cache;
+			var cache_key = CacheKeyHelper.GenerateCacheKey(MethodBase.GetCurrentMethod()!);
+			var cached_data = await _redis.Get<List<Museum>>(cache_key);
+			if (cached_data != null) return cached_data;
 
-			//	In case of null cache: calls the repository for data retrieval and cache it;
-			var find = await _repository.Find();
-			await _redis.Store<List<Museum>>("all-museum", find);
-			return find;
+			var find_all = await _repository.Find();
+			await _redis.Store<List<Museum>>(cache_key, find_all);
+			return find_all;
 		}
 		//
 		//
 		//
 		public async Task<List<PartialMuseumDTO>> Partial()
 		{
-			//	Check for cache and return it if available;
-			var cache = await _redis.Get<List<PartialMuseumDTO>>("partial-museum");
-			if (cache != null) return cache;
+			var cache_key = CacheKeyHelper.GenerateCacheKey(MethodBase.GetCurrentMethod()!);
+			var cached_data = await _redis.Get<List<PartialMuseumDTO>>(cache_key);
+			if (cached_data != null) return cached_data;
 
-			//	In case of null cache: calls the repository for data retrieval and cache it;
-			var find = await _repository.FindPartial();
-			await _redis.Store<List<PartialMuseumDTO>>("partial-museum", find);
-			return find;
+			var find_partial = await _repository.FindPartial();
+			await _redis.Store<List<PartialMuseumDTO>>(cache_key, find_partial);
+			return find_partial;
 		}
 		//
 		//
 		//
 		public async Task<PaginatedResponse<PartialMuseumDTO>> PartialPaginated(int pageIndex)
 		{
-			//	Check for cache and return it if available;
-			var cache = await _redis.Get<PaginatedResponse<PartialMuseumDTO>>($"partial-museum-{pageIndex}");
-			if (cache != null) return cache;
+			var cache_key = CacheKeyHelper.GenerateCacheKey(MethodBase.GetCurrentMethod()!, pageIndex);
+			var cached_data = await _redis.Get<PaginatedResponse<PartialMuseumDTO>>(cache_key);
+			if (cached_data != null) return cached_data;
 
-			//	In case of null cache: calls the repository for data retrieval and cache it;
-			var find = await _repository.FindPartialPaginated(pageIndex);
-			await _redis.Store<PaginatedResponse<PartialMuseumDTO>>($"partial-museum-{pageIndex}", find);
-			return find;
-		}
-		//
-		//
-		//
-		public async Task<PaginatedResponse<PartialMuseumDTO>> PaginatedQuery(MuseumQueryParams queryParams, int pageIndex)
-		{
-			//	Check for cache and return it if available;
-			var cache = await _redis.Get<PaginatedResponse<PartialMuseumDTO>>($"query-museum-{pageIndex}");
-			if (cache != null) return cache;
-
-			//	In case of null cache: calls the repository for data retrieval and cache it;
-			var find = await _repository.PaginatedQuery(queryParams, pageIndex);
-			await _redis.Store<PaginatedResponse<PartialMuseumDTO>>($"query-museum-{pageIndex}", find);
-			return find;
+			var find_partial_paginated = await _repository.FindPartialPaginated(pageIndex);
+			await _redis.Store<PaginatedResponse<PartialMuseumDTO>>(cache_key, find_partial_paginated);
+			return find_partial_paginated;
 		}
 		//
 		//
@@ -76,24 +61,44 @@ namespace ArtGallery.Services
 		//
 		//
 		//
-		public async Task<bool?> Delete(int id) => await _repository.DeleteById(id);
-		//
-		//
-		//
-		public async Task<Museum> Save(MuseumDTO museum) => await _repository.Save(new Museum()
+		public async Task<bool?> Delete(int id)
 		{
-			Country = museum.Country,
-			Name = museum.Name,
-			Slug = museum.Slug,
-			City = museum.City,
-			State = museum.State,
-			Latitude = museum.Latitude,
-			Longitude = museum.Longitude,
-			Inauguration = museum.Inauguration,
-		});
+			var delete = await _repository.DeleteById(id);
+			if (delete == true) _redis.ClearThisKeys(MethodBase.GetCurrentMethod()!);
+			return delete;
+		}
 		//
 		//
 		//
-		public async Task<Museum?> Update(int id, UpdateMuseumDTO museum) => await _repository.UpdateById(id, museum);
+		public async Task<Museum> Save(MuseumDTO museum)
+		{
+			var save = await _repository.Save(new Museum()
+			{
+				Country = museum.Country,
+				Name = museum.Name,
+				Slug = museum.Slug,
+				City = museum.City,
+				State = museum.State,
+				Latitude = museum.Latitude,
+				Longitude = museum.Longitude,
+				Inauguration = museum.Inauguration,
+			}) ?? throw new Exception("Failed to Save");
+			_redis.ClearThisKeys(MethodBase.GetCurrentMethod()!);
+			return save;
+		}
+		//
+		//
+		//
+		public async Task<Museum?> Update(int id, UpdateMuseumDTO museum)
+		{
+			var update = await _repository.UpdateById(id, museum) ?? throw new Exception("Fail to update entity");
+			_redis.ClearThisKeys(MethodBase.GetCurrentMethod()!);
+			return update;
+		}
+		//
+		//
+		//
+		public async Task<PaginatedResponse<PartialMuseumDTO>> PaginatedQuery(MuseumQueryParams queryParams, int pageIndex)
+			=> await _repository.PaginatedQuery(queryParams, pageIndex);
 	}
 }

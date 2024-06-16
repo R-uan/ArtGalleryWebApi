@@ -2,6 +2,8 @@
 using ArtGallery.Interfaces;
 using ArtGallery.DTO;
 using ArtGallery.Utils;
+using ArtGallery.Utils.Caching;
+using System.Reflection;
 
 namespace ArtGallery.Services
 {
@@ -14,36 +16,39 @@ namespace ArtGallery.Services
 		//
 		public async Task<List<Artist>> All()
 		{
-			var cache = await _redis.Get<List<Artist>>($"all-artist");
-			if (cache != null) return cache;
+			var cache_key = CacheKeyHelper.GenerateCacheKey(MethodBase.GetCurrentMethod()!);
+			var cached_data = await _redis.Get<List<Artist>>(cache_key);
+			if (cached_data != null) return cached_data;
 
-			var find = await _repository.Find();
-			await _redis.Store<List<Artist>>($"all-artist", find);
-			return find;
+			var find_all = await _repository.Find();
+			await _redis.Store<List<Artist>>(cache_key, find_all);
+			return find_all;
 		}
 		//
 		//
 		//
 		public async Task<PaginatedResponse<PartialArtistDTO>> PartialPaginated(int pageIndex)
 		{
-			var cache = await _redis.Get<PaginatedResponse<PartialArtistDTO>>($"partial-artist-{pageIndex}");
-			if (cache != null) return cache;
+			var cache_key = CacheKeyHelper.GenerateCacheKey(MethodBase.GetCurrentMethod()!, pageIndex);
+			var cached_data = await _redis.Get<PaginatedResponse<PartialArtistDTO>>(cache_key);
+			if (cached_data != null) return cached_data;
 
-			var find = await _repository.FindPartialPaginated(pageIndex);
-			await _redis.Store<PaginatedResponse<PartialArtistDTO>>($"partial-artist-{pageIndex}", find);
-			return find;
+			var find_partial_paginated = await _repository.FindPartialPaginated(pageIndex);
+			await _redis.Store<PaginatedResponse<PartialArtistDTO>>(cache_key, find_partial_paginated);
+			return find_partial_paginated;
 		}
 		//
 		//
 		//
 		public async Task<List<PartialArtistDTO>> Partial()
 		{
-			var cache = await _redis.Get<List<PartialArtistDTO>>("partial-artist");
-			if (cache != null) return cache;
+			var cache_key = CacheKeyHelper.GenerateCacheKey(MethodBase.GetCurrentMethod()!);
+			var cached_data = await _redis.Get<List<PartialArtistDTO>>(cache_key);
+			if (cached_data != null) return cached_data;
 
-			var find = await _repository.FindPartial();
-			await _redis.Store<List<PartialArtistDTO>>("partial-artist", find);
-			return find;
+			var find_partial = await _repository.FindPartial();
+			await _redis.Store<List<PartialArtistDTO>>(cache_key, find_partial);
+			return find_partial;
 		}
 		//
 		//
@@ -52,24 +57,40 @@ namespace ArtGallery.Services
 		//
 		//
 		//
-		public async Task<Artist> Save(ArtistDTO artist) => await _repository.Save(new Artist()
+		public async Task<Artist> Save(ArtistDTO artist)
 		{
-			Name = artist.Name,
-			Slug = artist.Slug,
-			Country = artist.Country,
-			Biography = artist.Biography,
-			Movement = artist.Movement,
-			Profession = artist.Profession,
-			ImageURL = artist.ImageURL
-		});
+			var save = await _repository.Save(new Artist()
+			{
+				Name = artist.Name,
+				Slug = artist.Slug,
+				Country = artist.Country,
+				Biography = artist.Biography,
+				Movement = artist.Movement,
+				Profession = artist.Profession,
+				ImageURL = artist.ImageURL
+			}) ?? throw new Exception("Fail to save");
+
+			_redis.ClearThisKeys(MethodBase.GetCurrentMethod()!);
+			return save;
+		}
 		//
 		//
 		//
-		public async Task<Artist?> Update(int id, UpdateArtistDTO artist) => await _repository.UpdateById(id, artist);
+		public async Task<Artist?> Update(int id, UpdateArtistDTO artist)
+		{
+			var update = await _repository.UpdateById(id, artist) ?? throw new Exception("Failed to update entity.");
+			_redis.ClearThisKeys(MethodBase.GetCurrentMethod()!);
+			return update;
+		}
 		//
 		//
 		//
-		public async Task<bool?> Delete(int id) => await _repository.DeleteById(id);
+		public async Task<bool?> Delete(int id)
+		{
+			var delete = await _repository.DeleteById(id);
+			if (delete == true) _redis.ClearThisKeys(MethodBase.GetCurrentMethod()!);
+			return delete;
+		}
 		//
 		//
 		//
@@ -79,6 +100,5 @@ namespace ArtGallery.Services
 		//
 		public async Task<PaginatedResponse<PartialArtistDTO>> PaginatedQuery(ArtistQueryParams queryParams, int page)
 			=> await _repository.PaginatedQuery(queryParams, page);
-
 	}
 }

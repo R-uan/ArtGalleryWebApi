@@ -1,6 +1,8 @@
-﻿using ArtGallery.Models;
+﻿using System.Reflection;
+using ArtGallery.Models;
 using ArtGallery.Repositories;
 using ArtGallery.Services;
+using ArtGallery.Utils.Caching;
 
 namespace ArtGallery;
 
@@ -13,33 +15,36 @@ public class PeriodService(IPeriodRepository repository, IRedisRepository redis)
 	//
 	public async Task<List<PartialPeriod>> Partial()
 	{
-		//	Check cache for existing data.
-		var cache = await _redis.Get<List<PartialPeriod>>("partial-periods");
-		if (cache != null) return cache;
+		var cache_key = CacheKeyHelper.GenerateCacheKey(MethodBase.GetCurrentMethod()!);
+		var cached_data = await _redis.Get<List<PartialPeriod>>(cache_key);
+		if (cached_data != null) return cached_data;
 
-		//	In case of null cache: calls the repository for data retrieval and cache it. 
-		var find = await _repository.FindPartial();
-		await _redis.Store<List<PartialPeriod>>("partial-periods", find);
-		return find;
+		var find_partial = await _repository.FindPartial();
+		await _redis.Store<List<PartialPeriod>>(cache_key, find_partial);
+		return find_partial;
 	}
 	//
 	//
 	//
 	public async Task<List<Period>> All()
 	{
-		//	Check for cache and return it if available;
-		var cache = await _redis.Get<List<Period>>("all-periods");
-		if (cache != null) return cache;
+		var cache_key = CacheKeyHelper.GenerateCacheKey(MethodBase.GetCurrentMethod()!);
+		var cached_data = await _redis.Get<List<Period>>(cache_key);
+		if (cached_data != null) return cached_data;
 
-		//	In case of null cache: calls the repository for data retrieval and cache it;
-		var find = await _repository.Find();
-		await _redis.Store<List<Period>>("all-periods", find);
-		return find;
+		var find_all = await _repository.Find();
+		await _redis.Store<List<Period>>(cache_key, find_all);
+		return find_all;
 	}
 	//
 	//
 	//
-	public async Task<bool?> Delete(int id) => await _repository.Delete(id);
+	public async Task<bool?> Delete(int id)
+	{
+		var delete = await _repository.Delete(id);
+		if (delete == true) _redis.ClearThisKeys(MethodBase.GetCurrentMethod()!);
+		return delete;
+	}
 	//
 	//
 	//
@@ -47,12 +52,17 @@ public class PeriodService(IPeriodRepository repository, IRedisRepository redis)
 	//
 	//
 	//
-	public async Task<Period?> Save(PeriodDTO period) => await _repository.Save(new Period()
+	public async Task<Period?> Save(PeriodDTO period)
 	{
-		Name = period.Name,
-		Summary = period.Summary,
-		Start = period.Start,
-		End = period.End,
-	});
+		var save = await _repository.Save(new Period()
+		{
+			Name = period.Name,
+			Summary = period.Summary,
+			Start = period.Start,
+			End = period.End,
+		}) ?? throw new Exception("");
 
+		_redis.ClearThisKeys(MethodBase.GetCurrentMethod()!);
+		return save;
+	}
 }
