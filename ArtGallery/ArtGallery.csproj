@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Components\Pages\Home.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Migrations\" />
     <Folder Include="Utils\CustomExceptions\" />
     <Folder Include="Utils\QueryParams\" />
@@ -36,17 +32,5 @@
   
   <ItemGroup>
     <Using Include="BCrypt.Net.BCrypt" Alias="BC" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Components\Pages\Home.razor" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Components\Pages\Home.razor" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Include="Components\Pages\Home.razor" />
   </ItemGroup>
 </Project>

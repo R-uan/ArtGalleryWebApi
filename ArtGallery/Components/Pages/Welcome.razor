@@ -24,6 +24,16 @@
     </table>
 }
 
+@if (Periods != null)
+{
+    <ul>
+        @foreach (var item in Periods)
+        {
+            <li><SinglePeriod Period="item" /></li>
+        }
+    </ul>
+}
+
 @code {
 
 }
