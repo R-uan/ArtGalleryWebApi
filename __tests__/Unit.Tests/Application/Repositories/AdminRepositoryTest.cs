@@ -1,8 +1,7 @@
 ﻿using ArtGallery;
-using ArtGallery.Controllers;
 using ArtGallery.Models;
-using ArtGallery.Repositories;
 using Microsoft.EntityFrameworkCore;
+using ArtGallery.Application.Repositories;
 
 namespace Unit.Tests.Repositories
 {

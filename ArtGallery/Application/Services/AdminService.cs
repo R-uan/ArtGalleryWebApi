@@ -1,10 +1,9 @@
-using ArtGallery.Interfaces;
-using ArtGallery.Models;
-using ArtGallery.Repositories;
 using ArtGallery.Utils;
-using Microsoft.Extensions.Options;
+using ArtGallery.Models;
+using ArtGallery.Interfaces.Services;
+using ArtGallery.Interfaces.Repository;
 
-namespace ArtGallery.Services {
+namespace ArtGallery.Application.Services {
 	public class AdminService(IAdminRepository repository, JWTHelper authHelper) : IAdminService {
 		private readonly JWTHelper _authHelper = authHelper;
 		private readonly IAdminRepository _repository = repository;

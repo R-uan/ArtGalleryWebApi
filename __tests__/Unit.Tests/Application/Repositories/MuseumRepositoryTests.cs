@@ -1,9 +1,9 @@
 using ArtGallery;
 using ArtGallery.DTO;
-using ArtGallery.Models;
-using ArtGallery.Repositories;
 using ArtGallery.Utils;
+using ArtGallery.Models;
 using Microsoft.EntityFrameworkCore;
+using ArtGallery.Application.Repositories;
 
 namespace Unit.Tests.Repositories
 {

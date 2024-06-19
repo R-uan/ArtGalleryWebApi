@@ -1,11 +1,12 @@
-﻿using ArtGallery.Models;
-using ArtGallery.Interfaces;
-using ArtGallery.DTO;
+﻿using ArtGallery.DTO;
 using ArtGallery.Utils;
-using ArtGallery.Utils.Caching;
 using System.Reflection;
+using ArtGallery.Models;
+using ArtGallery.Utils.Caching;
+using ArtGallery.Interfaces.Services;
+using ArtGallery.Interfaces.Repository;
 
-namespace ArtGallery.Services
+namespace ArtGallery.Application.Services
 {
 	public class MuseumService(IMuseumRepository repository, IRedisRepository redis) : IMuseumService
 	{

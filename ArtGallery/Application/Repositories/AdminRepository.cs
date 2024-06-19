@@ -1,8 +1,8 @@
-using ArtGallery.Interfaces;
 using ArtGallery.Models;
 using Microsoft.EntityFrameworkCore;
+using ArtGallery.Interfaces.Repository;
 
-namespace ArtGallery.Repositories
+namespace ArtGallery.Application.Repositories
 {
 	public class AdminRepository(GalleryDbContext context) : IAdminRepository
 	{

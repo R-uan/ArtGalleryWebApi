@@ -1,7 +1,7 @@
 using ArtGallery.Utils;
+using ArtGallery.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
-using ArtGallery.Models;
 
 namespace Unit.Tests.Utils
 {

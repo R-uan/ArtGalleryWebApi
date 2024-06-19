@@ -1,14 +1,7 @@
-﻿using ArtGallery;
-using ArtGallery.Models;
-using Microsoft.OpenApi.Any;
-using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using StackExchange.Redis;
 using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Threading.Tasks;
+using ArtGallery.Application.Repositories;
+
 
 namespace Unit.Tests.Repositories
 {
