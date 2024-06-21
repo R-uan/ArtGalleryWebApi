@@ -2,7 +2,7 @@
 using ArtGallery.Utils;
 using Microsoft.AspNetCore.Components;
 
-namespace ArtGallery.Components.Pages
+namespace ArtGallery.Components.Landing
 {
     public partial class Landing : ComponentBase
     {

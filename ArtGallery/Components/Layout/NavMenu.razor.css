@@ -1,23 +1,20 @@
 .navbar-toggler {
-    appearance: none;
-    cursor: pointer;
-    width: 3.5rem;
-    height: 2.5rem;
+    z-index: 99;
+    top: 15px;
+    width: 3rem;
+    right: 15px;
     color: white;
+    height: 2.5rem;
+    cursor: pointer;
+    appearance: none;
     position: absolute;
-    top: 0.5rem;
-    right: 1rem;
+    background-color: white;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    background-color: #050A0E;
 }
 
     .navbar-toggler:checked {
         background-color: rgba(255, 255, 255, 0.5);
     }
-
-.top-row {
-    height: 3.5rem;
-}
 
 .navbar-brand {
     font-size: 1.1rem;
@@ -46,7 +43,7 @@
 }
 
 .nav-item {
-    font-size: 0.9rem;
+    font-size: 1.4rem;
     padding-bottom: 0.5rem;
 }
 

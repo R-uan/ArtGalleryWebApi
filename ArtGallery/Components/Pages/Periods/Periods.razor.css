@@ -1,0 +1,11 @@
+﻿.periods {
+    gap: 5px;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 641px) {
+    .periods {
+        grid-template-columns: 1fr 1fr;
+    }
+}

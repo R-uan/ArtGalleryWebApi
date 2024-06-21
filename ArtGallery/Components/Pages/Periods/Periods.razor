@@ -1,0 +1,22 @@
+﻿@page "/periods"
+@rendermode InteractiveServer
+
+<PageTitle>Periods Managment</PageTitle>
+
+<div class="top-row">
+    <h1>Periods Managment</h1>
+</div>
+
+@if (PeriodList != null)
+{
+    <article class="periods">
+        @foreach (var Period in PeriodList)
+        {
+            <SinglePeriod PeriodProp="Period" />
+        }
+    </article>
+}
+
+@code {
+
+}

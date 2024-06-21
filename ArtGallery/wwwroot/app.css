@@ -1,6 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Smooch+Sans:wght@100..900&display=swap');
+
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: #070707;
+    font-family: "Smooch Sans", sans-serif;
+    background-color: #050A0E;
+    color: whitesmoke;
+}
+
+body {
+    min-height: 100vh;
 }
 
 a, .btn-link {
@@ -14,7 +21,7 @@ a, .btn-link {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {
@@ -49,4 +56,24 @@ h1:focus {
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
+}
+
+.top-row {
+    height: 4rem;
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    padding-right: 10px;
+}
+
+    .top-row > h1 {
+        line-height: 1;
+        position: relative;
+    }
+
+@media (min-width: 640px) {
+    .top-row {
+        justify-content: flex-end;
+    }
 }
