@@ -10,6 +10,7 @@ namespace ArtGallery.Application.Controllers
 {
     [ApiController]
     [Route("/artwork")]
+    [IgnoreAntiforgeryToken]
     public class ArtworkController(IArtworkService service, IValidator<ArtworkDTO> validator) : ControllerBase
     {
         private readonly IArtworkService _service = service;

@@ -1,4 +1,5 @@
-﻿@using ArtGallery.Interfaces.Services
+﻿@using ArtGallery.Utils
+@using ArtGallery.Interfaces.Services
 @inject IPeriodService periodService
 
 <div class="container-fluid period-component">
@@ -17,8 +18,8 @@
 </div>
 
 @code {
-    [Parameter]
-    public required PartialPeriod PeriodProp { get; set; }
+    [Inject] public required EventService EventService { get; set; }
+    [Parameter] public required PartialPeriod PeriodProp { get; set; }
     public bool Deletion = false;
 
     public void DeletionSwitch()
@@ -28,9 +29,10 @@
         Deletion = !Deletion;
     }
 
-    public async void ConfirmDeletion()
+    public async Task ConfirmDeletion()
     {
         await periodService.Delete(PeriodProp.PeriodId);
+        await EventService.NotifyPeriodDeleted();
     }
 }
 

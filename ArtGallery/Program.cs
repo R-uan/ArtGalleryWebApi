@@ -49,7 +49,7 @@ namespace ArtGallery
             //
             Builder.Services.AddDbContext<GalleryDbContext>(options =>
             {
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")).EnableDetailedErrors();
             });
 
             /*
@@ -108,6 +108,7 @@ namespace ArtGallery
 
             //
             //	Blazor Stuff
+            Builder.Services.AddSingleton<EventService>();
             Builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
             var app = Builder.Build();
