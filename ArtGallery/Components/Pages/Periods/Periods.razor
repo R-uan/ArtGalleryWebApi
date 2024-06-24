@@ -7,12 +7,67 @@
     <h1>Periods Managment</h1>
 </div>
 
-@if (PeriodList != null)
-{
-    <article class="periods">
-        @foreach (var Period in PeriodList)
-        {
-            <SinglePeriod PeriodProp="Period" />
-        }
-    </article>
+<Modal IsVisible="@isModalVisible" IsVisibleChanged="OnModalVisibilityChanged">
+    <div>
+        <EditForm Model="PeriodModel" OnValidSubmit="HandleCreatePeriodFormSubmit">
+            <div class="d-flex flex-column gap-2 flex-md-row">
+                <div class="flex-grow-1 mb-3">
+                    <label for="name" class="form-label fs-4">Period Name</label>
+                    <InputText @bind-Value="PeriodModel.Name" id="name" placeholder="Provide a name" class="form-control fs-5" />
+                </div>
+                <div class="md-100 nm-25 d-flex flex-row gap-1 mb-3">
+                    <div class="w-50">
+                        <label for="start-year" class="form-label fs-4">Start Year</label>
+                        <InputNumber @bind-Value="PeriodModel.Start" id="start-year" placeholder="Year that the period started" class="fs-5 form-control" />
+                    </div>
+                    <div class="w-50">
+                        <label for="end-year" class="form-label fs-4">End Year</label>
+                        <InputNumber @bind-Value="PeriodModel.End" id="name" placeholder="Year that the period ended" class="fs-5 form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="md-100 mb-3">
+                <label for="summary" class="form-label fs-4">Period</label>
+                <InputTextArea @bind-Value="PeriodModel.Summary" id="summary" placeholder="Provide a small sumary about the period." class="fs-5 md-100 form-control" />
+            </div>
+            <div class="w-100">
+                <button @onclick="ShowModal" type="submit" class="btn btn-primary w-100 fs-5">Submit</button>
+            </div>
+        </EditForm>
+    </div>
+</Modal>
+
+<article class="container">
+    <div class="w-100 mb-2">
+        <button @onclick="ShowModal" type="button" class="btn btn-primary w-100">Create New</button>
+    </div>
+    @if (PeriodList != null)
+    {
+        <div class="period-listing-grid">
+            @foreach (var Period in PeriodList)
+            {
+                <SinglePeriod PeriodProp="Period" />
+            }
+        </div>
+    }
+</article>
+
+@code {
+    private bool isModalVisible = false;
+
+    private void ShowModal()
+    {
+        isModalVisible = true;
+    }
+
+    private void HideModal()
+    {
+        isModalVisible = false;
+    }
+
+    private Task OnModalVisibilityChanged(bool isVisible)
+    {
+        isModalVisible = isVisible;
+        return Task.CompletedTask;
+    }
 }

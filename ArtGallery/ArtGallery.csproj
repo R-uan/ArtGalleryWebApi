@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Components\Pages\Museums\" />
     <Folder Include="Migrations\" />
     <Folder Include="Utils\CustomExceptions\" />
     <Folder Include="Utils\QueryParams\" />

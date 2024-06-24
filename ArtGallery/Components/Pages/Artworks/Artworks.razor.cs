@@ -15,6 +15,7 @@ namespace ArtGallery.Components.Pages.Artworks
 
         protected override async Task OnInitializedAsync()
         {
+            Console.WriteLine("Artwork page initialized.");
             await LoadArtworks();
         }
 

@@ -1,11 +1,33 @@
-﻿.periods {
+﻿.period-listing-grid {
     gap: 5px;
     display: grid;
-    grid-template-columns: 1fr;
 }
 
-@media (min-width: 641px) {
-    .periods {
+.nm-25 {
+    width: 25%
+}
+
+
+
+@media (max-width: 790px) {
+    .period-listing-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .md-100 {
+        width: 100%;
+    }
+}
+
+@media (min-width: 1080px) {
+    .period-listing-grid {
         grid-template-columns: 1fr 1fr;
     }
 }
+
+@media (min-width: 1300px) {
+    .period-listing-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+

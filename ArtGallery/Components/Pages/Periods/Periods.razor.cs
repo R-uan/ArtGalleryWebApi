@@ -7,10 +7,23 @@ namespace ArtGallery.Components.Pages.Periods
 {
     public partial class Periods : ComponentBase, IDisposable
     {
+        public List<PartialPeriod>? PeriodList { get; set; }
+        public PeriodDTO PeriodModel = new PeriodDTO();
         [Inject] public required EventService EventService { get; set; }
         [Inject] public required IPeriodService PeriodService { get; set; }
         private bool _subscribed = false;
-        public List<PartialPeriod>? PeriodList { get; set; }
+
+        private async Task HandleCreatePeriodFormSubmit()
+        {
+            try
+            {
+                await PeriodService.Save(PeriodModel);
+                this.HideModal();
+            } catch
+            {
+
+            }
+        }
 
         protected override async Task OnInitializedAsync()
         {
