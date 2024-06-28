@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ArtGallery.Application.Controllers
 {
     [ApiController]
-    [Route("period")]
+    [Route("api/period")]
     public class PeriodController(IPeriodService service, IValidator<PeriodDTO> validator) : ControllerBase
     {
         private readonly IPeriodService _service = service;

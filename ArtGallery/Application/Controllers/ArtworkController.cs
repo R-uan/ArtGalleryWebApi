@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace ArtGallery.Application.Controllers
 {
     [ApiController]
-    [Route("/artwork")]
+    [Route("api/artwork")]
     [IgnoreAntiforgeryToken]
     public class ArtworkController(IArtworkService service, IValidator<ArtworkDTO> validator) : ControllerBase
     {

@@ -7,11 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Components\Pages\Artworks\Artworks.razor" />
+    <Content Remove="Components\Pages\Museums\Museum.razor" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Pages\Museums\" />
     <Folder Include="Migrations\" />
     <Folder Include="Utils\CustomExceptions\" />
     <Folder Include="Utils\QueryParams\" />
@@ -40,14 +39,15 @@
   </ItemGroup>
   
   <ItemGroup>
-    <UpToDateCheckInput Remove="Components\Pages\Artworks\Artworks.razor" />
+    <_ContentIncludedByDefault Remove="Components\Pages\Museums\Museum.razor" />
   </ItemGroup>
   
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="Components\Pages\Artworks\Artworks.razor" />
+    <None Include="Components\Pages\Artworks.razor" />
+    <None Include="Components\Pages\Museums\Museum.razor" />
   </ItemGroup>
   
   <ItemGroup>
-    <None Include="Components\Pages\Artworks\Artworks.razor" />
+    <UpToDateCheckInput Remove="Components\Pages\Museums\Museum.razor" />
   </ItemGroup>
 </Project>

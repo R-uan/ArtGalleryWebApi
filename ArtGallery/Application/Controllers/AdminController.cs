@@ -7,7 +7,7 @@ using ArtGallery.Interfaces.Services;
 namespace ArtGallery.Application.Controllers
 {
     [ApiController]
-    [Route("auth")]
+    [Route("api/auth")]
     public class AdminController(IAdminService service, IValidator<Admin> validator) : ControllerBase
     {
         private readonly IValidator<Admin> _validator = validator;

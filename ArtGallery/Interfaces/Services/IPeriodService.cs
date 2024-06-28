@@ -1,4 +1,5 @@
-﻿using ArtGallery.Models;
+﻿using ArtGallery.Data.DataTransferObjects.Period;
+using ArtGallery.Models;
 
 namespace ArtGallery.Interfaces.Services
 {
@@ -9,5 +10,6 @@ namespace ArtGallery.Interfaces.Services
         Task<Period?> FindById(int id);
         Task<Period?> Save(PeriodDTO period);
         Task<List<PartialPeriod>> Partial();
+        Task<bool> Update(int id, UpdatePeriod period);
     }
 }

@@ -3,6 +3,7 @@ using ArtGallery.Models;
 using ArtGallery.Utils.Caching;
 using ArtGallery.Interfaces.Services;
 using ArtGallery.Interfaces.Repository;
+using ArtGallery.Data.DataTransferObjects.Period;
 
 namespace ArtGallery.Application.Services
 {
@@ -64,6 +65,13 @@ namespace ArtGallery.Application.Services
 
             _redis.ClearThisKeys(MethodBase.GetCurrentMethod()!);
             return save;
+        }
+
+        public async Task<bool> Update(int id, UpdatePeriod period)
+        {
+            var update = await _repository.Update(id, period) ?? throw new Exception("");
+            _redis.ClearThisKeys(MethodBase.GetCurrentMethod()!);
+            return update == true ? update : throw new Exception("Failed to update period.");
         }
     }
 }

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace ArtGallery.Application.Controllers
 {
     [ApiController]
-    [Route("/museum")]
+    [Route("api/museum")]
     public class MuseumController(IMuseumService service, IValidator<MuseumDTO> validator) : ControllerBase
     {
         private readonly IMuseumService _service = service;
